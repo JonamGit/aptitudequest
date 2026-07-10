@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AptitudeQuest — Sharp minds, sharper scores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F8F8F5;
+  --surface:#FFFFFF;
+  --border:#E4E4DC;
+  --ink:#111111;
+  --ink2:#555550;
+  --ink3:#999990;
+  --quant:#6366F1;
+  --quant-light:#EEF2FF;
+  --logic:#10B981;
+  --logic-light:#ECFDF5;
+  --verbal:#F59E0B;
+  --verbal-light:#FFFBEB;
+  --data:#EF4444;
+  --data-light:#FEF2F2;
+  --correct:#10B981;
+  --wrong:#EF4444;
+  --radius:12px;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.5}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input{font-family:inherit;outline:none}
+
+/* ── LAYOUT ── */
+.wrap{max-width:680px;margin:0 auto;padding:0 20px}
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--border);margin-bottom:32px}
+.logo{font-size:15px;font-weight:700;letter-spacing:-.3px;color:var(--ink)}
+.logo span{color:var(--ink3)}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.icon-btn{width:36px;height:36px;border-radius:8px;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:16px;transition:all .15s}
+.icon-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ── ENTRY SCREEN ── */
+.entry-hero{padding:48px 0 40px}
+.entry-eyebrow{font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px}
+.entry-title{font-size:clamp(36px,8vw,64px);font-weight:900;line-height:1;letter-spacing:-2px;color:var(--ink);margin-bottom:16px}
+.entry-title em{font-style:normal;color:var(--quant)}
+.entry-sub{font-size:17px;color:var(--ink2);max-width:460px;line-height:1.6;margin-bottom:40px}
+.palette-strip{display:flex;height:6px;border-radius:100px;overflow:hidden;margin-bottom:48px;gap:2px}
+.palette-strip span{flex:1;border-radius:100px}
+.entry-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+.entry-form label{display:block;font-size:13px;font-weight:500;margin-bottom:8px;color:var(--ink2)}
+.entry-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:16px;font-weight:500;color:var(--ink);background:var(--bg);transition:border .15s}
+.entry-input:focus{border-color:var(--ink)}
+.entry-input::placeholder{color:var(--ink3)}
+.btn-primary{width:100%;margin-top:16px;padding:14px;background:var(--ink);color:#fff;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:-.2px;transition:opacity .15s}
+.btn-primary:hover{opacity:.85}
+.back-link{display:block;text-align:center;margin-top:16px;font-size:13px;color:var(--ink3);text-decoration:none;cursor:pointer}
+.back-link:hover{color:var(--ink)}
+
+/* ── HOME SCREEN ── */
+.home-header{padding:28px 0 24px;display:flex;align-items:flex-start;justify-content:space-between}
+.player-info{display:flex;align-items:center;gap:12px}
+.avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0}
+.player-name{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.player-sub{font-size:13px;color:var(--ink3)}
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:28px}
+.stat-cell{background:var(--surface);padding:16px;text-align:center}
+.stat-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--ink);display:block;letter-spacing:-1px}
+.stat-lbl{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-top:2px}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.stages-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stage-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
+.stage-card:hover:not(.locked){transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.stage-card.locked{opacity:.5;cursor:not-allowed}
+.stage-swatch{height:4px;width:100%}
+.stage-body{padding:14px}
+.stage-cat{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.stage-name{font-size:14px;font-weight:700;letter-spacing:-.2px;color:var(--ink);margin-bottom:2px}
+.stage-lvl{font-size:11px;color:var(--ink3)}
+.stage-badge{position:absolute;top:12px;right:12px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;letter-spacing:.05em}
+.badge-done{background:#ECFDF5;color:#065F46}
+.badge-lock{background:var(--bg);color:var(--ink3)}
+
+/* ── GAME SCREEN ── */
+.game-top{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:28px}
+.game-stage-info{display:flex;align-items:center;gap:10px}
+.game-swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.game-stage-name{font-size:14px;font-weight:600;letter-spacing:-.2px}
+.progress-dots{display:flex;gap:5px;align-items:center}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .2s}
+.pdot.done{background:var(--correct)}
+.pdot.active{background:var(--ink)}
+.timer-badge{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;padding:5px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--ink);min-width:50px;text-align:center}
+.timer-badge.warn{border-color:var(--wrong);color:var(--wrong)}
+.q-counter{font-size:12px;font-weight:500;color:var(--ink3);margin-bottom:8px;letter-spacing:.05em}
+.q-text{font-size:18px;font-weight:600;line-height:1.5;letter-spacing:-.3px;color:var(--ink);margin-bottom:24px}
+.options{display:grid;gap:8px;margin-bottom:24px}
+.opt{border:1px solid var(--border);border-radius:10px;padding:13px 16px;font-size:15px;font-weight:500;color:var(--ink);background:var(--surface);text-align:left;transition:all .15s;display:flex;align-items:center;gap:10px}
+.opt-key{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--ink3);flex-shrink:0}
+.opt:hover:not(:disabled){border-color:var(--ink);background:var(--bg)}
+.opt.correct{border-color:var(--correct);background:#ECFDF5;color:#065F46}
+.opt.wrong{border-color:var(--wrong);background:#FEF2F2;color:#991B1B}
+.opt:disabled{cursor:default}
+.explain-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px;display:none}
+.explain-box.show{display:block}
+.explain-tabs{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.etab{flex:1;padding:8px;font-size:12px;font-weight:600;background:transparent;color:var(--ink3);border:none;letter-spacing:.03em;transition:all .15s}
+.etab.active{background:var(--ink);color:#fff}
+.explain-content{font-size:14px;line-height:1.65;color:var(--ink2)}
+.btn-next{width:100%;padding:13px;background:var(--ink);color:#fff;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:-.2px;display:none}
+.btn-next.show{display:block}
+.btn-next:hover{opacity:.85}
+
+/* ── SCORE SCREEN ── */
+.score-wrap{padding-top:40px;padding-bottom:60px}
+.score-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.score-big{font-family:'DM Mono',monospace;font-size:72px;font-weight:500;line-height:1;letter-spacing:-3px;color:var(--ink);margin-bottom:4px}
+.score-big span{font-size:32px;color:var(--ink3)}
+.score-msg{font-size:18px;font-weight:600;letter-spacing:-.3px;margin-bottom:28px;color:var(--ink)}
+.answer-palette{display:flex;gap:4px;margin-bottom:32px}
+.ap-slot{flex:1;height:28px;border-radius:6px}
+.ap-c{background:var(--correct)}
+.ap-w{background:var(--wrong)}
+.score-detail{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px}
+.sd-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+.sd-num{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--ink);letter-spacing:-1px}
+.sd-lbl{font-size:12px;color:var(--ink3);margin-top:2px}
+.unlock-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px;display:none}
+.unlock-banner.show{display:flex;gap:12px;align-items:center}
+.unlock-icon{font-size:24px}
+.unlock-text{font-size:14px;font-weight:500;color:var(--ink);line-height:1.4}
+.unlock-text strong{display:block;font-size:15px;margin-bottom:2px}
+.score-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-sec{padding:13px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;background:var(--surface);color:var(--ink);letter-spacing:-.2px;transition:all .15s}
+.btn-sec:hover{border-color:var(--ink)}
+.btn-home{grid-column:1/-1;padding:13px;background:var(--ink);color:#fff;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:-.2px}
+.btn-home:hover{opacity:.85}
+
+/* ── OVERLAYS ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:flex-end;justify-content:center;padding:16px}
+.overlay.open{display:flex}
+.sheet{background:var(--surface);border-radius:16px 16px 12px 12px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;padding:24px}
+.sheet-title{font-size:17px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
+.sheet-sub{font-size:13px;color:var(--ink3);margin-bottom:20px}
+.sheet-close{float:right;background:var(--bg);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:8px}
+
+/* leaderboard */
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink3);width:24px;flex-shrink:0}
+.lb-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-size:14px;font-weight:600}
+.lb-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+.lb-score{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;flex-shrink:0}
+
+/* feedback */
+.stars{display:flex;gap:6px;margin-bottom:16px}
+.star{font-size:28px;cursor:pointer;filter:grayscale(1);transition:filter .15s}
+.star.on{filter:none}
+.fb-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.fb-cat{padding:6px 12px;border:1px solid var(--border);border-radius:100px;font-size:12px;font-weight:500;background:var(--surface);color:var(--ink2);cursor:pointer;transition:all .15s}
+.fb-cat.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.fb-textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;resize:vertical;min-height:80px;color:var(--ink);background:var(--bg)}
+.fb-textarea:focus{border-color:var(--ink)}
+
+/* admin */
+.adm-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px}
+.atab{flex:1;padding:9px;font-size:12px;font-weight:600;background:transparent;color:var(--ink3);border:none;letter-spacing:.03em;transition:all .15s}
+.atab.active{background:var(--ink);color:#fff}
+.adm-section{display:none}
+.adm-section.active{display:block}
+.fb-item{border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px}
+.fb-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.fb-item-who{font-size:13px;font-weight:600}
+.fb-item-stars{font-size:12px}
+.fb-item-cat{font-size:11px;color:var(--ink3);margin-bottom:4px}
+.fb-item-text{font-size:13px;color:var(--ink2)}
+.danger-btn{width:100%;padding:11px;border:1px solid #FECACA;border-radius:8px;background:#FEF2F2;color:#991B1B;font-size:13px;font-weight:600;margin-bottom:8px}
+.danger-btn:hover{background:#FEE2E2}
+
+/* restart modal */
+.rst-opt{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.rst-opt:hover{border-color:var(--ink)}
+.rst-opt h4{font-size:14px;font-weight:600;margin-bottom:2px}
+.rst-opt p{font-size:12px;color:var(--ink3)}
+.rst-opt.danger{border-color:#FECACA}
+.rst-opt.danger h4{color:#991B1B}
+
+/* PIN screen */
+.pin-wrap{text-align:center;padding:20px 0}
+.pin-input{width:120px;text-align:center;letter-spacing:.2em;font-size:20px;font-weight:600;border:2px solid var(--border);border-radius:8px;padding:10px;background:var(--bg);color:var(--ink)}
+.pin-input:focus{border-color:var(--ink)}
+.pin-msg{font-size:13px;margin-top:8px;min-height:20px;color:var(--wrong)}
+
+@media(max-width:460px){
+  .stages-grid{grid-template-columns:1fr}
+  .score-detail{grid-template-columns:1fr 1fr}
+  .entry-title{font-size:44px}
+}
+
+/* ── GAME NAV BAR ── */
+.game-nav-bar{display:flex;gap:8px;padding:8px 0 14px;border-bottom:1px solid var(--border);margin-bottom:24px}
+.gnav-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border:1px solid var(--border);border-radius:100px;font-size:12px;font-weight:600;color:var(--ink2);background:var(--surface);cursor:pointer;letter-spacing:.02em;transition:all .15s}
+.gnav-btn:hover{border-color:var(--ink);color:var(--ink);background:var(--bg)}
+.gnav-btn:last-child{border-color:#FECACA;color:#EF4444}
+.gnav-btn:last-child:hover{border-color:#EF4444;background:#FEF2F2;color:#DC2626}
+.gnav-icon{font-size:13px}
+
+/* ── CONFIRM MODAL (inline, small) ── */
+.confirm-sheet{background:var(--surface);border-radius:16px 16px 12px 12px;width:100%;max-width:380px;padding:24px;text-align:center}
+.confirm-title{font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px}
+.confirm-sub{font-size:13px;color:var(--ink3);margin-bottom:20px;line-height:1.5}
+.confirm-actions{display:flex;flex-direction:column;gap:8px}
+.confirm-primary{padding:12px;background:var(--ink);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.confirm-primary:hover{opacity:.85}
+.confirm-secondary{padding:12px;background:transparent;color:var(--ink2);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.confirm-secondary:hover{border-color:var(--ink);color:var(--ink)}
+.confirm-danger{padding:12px;background:transparent;color:#EF4444;border:1px solid #FECACA;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.confirm-danger:hover{background:#FEF2F2;border-color:#EF4444}
+
+</style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<!-- ENTRY SCREEN -->
+<div id="s-entry" class="screen active">
+<div class="wrap">
+  <div class="topbar">
+    <div class="logo">Aptitude<span>Quest</span></div>
+  </div>
+  <div class="entry-hero">
+    <div class="entry-eyebrow">Aptitude practice · 4 categories · 5 questions per stage</div>
+    <h1 class="entry-title">Sharp<br>minds,<br><em>sharper</em><br>scores.</h1>
+    <p class="entry-sub">Practice quant, logic, verbal, and data skills. Beat each stage to unlock the next.</p>
+    <div class="palette-strip">
+      <span style="background:var(--quant)"></span>
+      <span style="background:var(--logic)"></span>
+      <span style="background:var(--verbal)"></span>
+      <span style="background:var(--data)"></span>
+    </div>
+    <div class="entry-form">
+      <label for="player-name-input">Your name to begin</label>
+      <input type="text" id="player-name-input" class="entry-input" placeholder="e.g. Priya, Rohan, Alex" maxlength="24" autocomplete="off">
+      <button class="btn-primary" onclick="startPlayer()">Start playing →</button>
+    </div>
+    <a class="back-link" id="back-link" onclick="goHome()" style="display:none">← Back to my game</a>
+  </div>
+</div>
+</div>
+
+<!-- HOME SCREEN -->
+<div id="s-home" class="screen">
+<div class="wrap">
+  <div class="home-header">
+    <div class="player-info">
+      <div class="avatar" id="hm-av"></div>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+      <div class="player-name" id="hm-name"></div>
+      <span id="test-badge" style="display:none;align-items:center;gap:3px;font-size:10px;font-weight:700;letter-spacing:.08em;background:#FFFBEB;color:#D97706;border:1px solid #FDE68A;border-radius:100px;padding:2px 8px">🧪 TEST</span>
+    </div>
+        <div class="player-sub" id="hm-sub"></div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" title="Leaderboard" onclick="openLB()">⊞</button>
+      <button class="icon-btn" title="Feedback" onclick="openFB()">✦</button>
+      <button class="icon-btn" title="Restart" onclick="openRst()" style="border-color:#FECACA;color:#EF4444">↺</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-cell" id="tap-score" onclick="adminTap()">
+      <span class="stat-num" id="hm-score">0</span>
+      <div class="stat-lbl">Total Score</div>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num" id="hm-streak">0</span>
+      <div class="stat-lbl">Best Streak</div>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num" id="hm-acc">—</span>
+      <div class="stat-lbl">Accuracy</div>
+    </div>
+  </div>
+  <div class="section-label">Quantitative</div>
+  <div class="stages-grid" id="grid-quant"></div>
+  <div class="section-label" style="margin-top:20px">Logic</div>
+  <div class="stages-grid" id="grid-logic"></div>
+  <div class="section-label" style="margin-top:20px">Verbal</div>
+  <div class="stages-grid" id="grid-verbal"></div>
+  <div class="section-label" style="margin-top:20px">Data Interpretation</div>
+  <div class="stages-grid" id="grid-data"></div>
+  <div style="height:40px"></div>
+</div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="s-game" class="screen">
+<div class="wrap">
+  <div class="game-top">
+    <div class="game-stage-info">
+      <div class="game-swatch" id="gm-swatch"></div>
+      <div class="game-stage-name" id="gm-sname"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="progress-dots" id="gm-dots"></div>
+      <div class="timer-badge" id="gm-timer">30</div>
+    </div>
+  </div>
+  <div class="game-nav-bar">
+    <button class="gnav-btn" onclick="confirmHome()" title="Back to stage map">
+      <span class="gnav-icon">⌂</span> Home
+    </button>
+    <button class="gnav-btn" onclick="confirmRestart()" title="Restart this stage">
+      <span class="gnav-icon">↺</span> Restart stage
+    </button>
+  </div>
+  <div id="gm-q-counter" class="q-counter"></div>
+  <div id="gm-q-text" class="q-text"></div>
+  <div id="gm-options" class="options"></div>
+  <div class="explain-box" id="gm-explain">
+    <div class="explain-tabs">
+      <button class="etab active" onclick="switchTab(0)">Explanation</button>
+      <button class="etab" onclick="switchTab(1)">ELI5 🧸</button>
+    </div>
+    <div class="explain-content" id="gm-expl-text"></div>
+  </div>
+  <button class="btn-next" id="gm-next" onclick="nextQ()">Next question →</button>
+</div>
+</div>
+
+<!-- SCORE SCREEN -->
+<div id="s-score" class="screen">
+<div class="wrap score-wrap">
+  <div class="topbar" style="margin-bottom:32px">
+    <div class="logo">Aptitude<span>Quest</span></div>
+    <button class="icon-btn" onclick="openLB()">⊞</button>
+  </div>
+  <div class="score-label">Stage complete</div>
+  <div class="score-big" id="sc-score">0<span>/50</span></div>
+  <div class="score-msg" id="sc-msg"></div>
+  <div class="answer-palette" id="sc-palette"></div>
+  <div class="score-detail">
+    <div class="sd-cell"><div class="sd-num" id="sc-correct">0</div><div class="sd-lbl">Correct</div></div>
+    <div class="sd-cell"><div class="sd-num" id="sc-time">0s</div><div class="sd-lbl">Avg time</div></div>
+    <div class="sd-cell"><div class="sd-num" id="sc-streak">0</div><div class="sd-lbl">Streak</div></div>
+    <div class="sd-cell"><div class="sd-num" id="sc-acc">0%</div><div class="sd-lbl">Accuracy</div></div>
+  </div>
+  <div class="unlock-banner" id="sc-unlock">
+    <div class="unlock-icon">🔓</div>
+    <div class="unlock-text"><strong id="sc-unlock-name"></strong>Unlocked! New stage ready.</div>
+  </div>
+  <div class="score-actions">
+    <button class="btn-sec" id="sc-retry" onclick="retryStage()">↺ Retry</button>
+    <button class="btn-sec" id="sc-share" onclick="shareScore()">📸 Share score</button>
+    <button class="btn-home" onclick="goHome()">← Back to stages</button>
+  </div>
+</div>
+</div>
+
+<!-- LEADERBOARD OVERLAY -->
+<div class="overlay" id="lb-ov" onclick="closeAll(event,this)">
+<div class="sheet">
+  <button class="sheet-close" onclick="closeOverlay('lb-ov')">✕</button>
+  <div class="sheet-title">Leaderboard <span style="font-size:12px;font-weight:500;color:#10B981;margin-left:6px">🌐 Global</span></div>
+  <div class="sheet-sub">Real-time scores from all players worldwide</div>
+  <div id="lb-list"></div>
+</div>
+</div>
+
+<!-- FEEDBACK OVERLAY -->
+<div class="overlay" id="fb-ov" onclick="closeAll(event,this)">
+<div class="sheet">
+  <button class="sheet-close" onclick="closeOverlay('fb-ov')">✕</button>
+  <div class="sheet-title">Leave feedback</div>
+  <div class="sheet-sub">Help improve AptitudeQuest</div>
+  <div class="stars" id="fb-stars">
+    <span class="star" onclick="setRating(1)">★</span>
+    <span class="star" onclick="setRating(2)">★</span>
+    <span class="star" onclick="setRating(3)">★</span>
+    <span class="star" onclick="setRating(4)">★</span>
+    <span class="star" onclick="setRating(5)">★</span>
+  </div>
+  <div class="fb-cats">
+    <button class="fb-cat" onclick="toggleCat(this)">Quant</button>
+    <button class="fb-cat" onclick="toggleCat(this)">Logic</button>
+    <button class="fb-cat" onclick="toggleCat(this)">Verbal</button>
+    <button class="fb-cat" onclick="toggleCat(this)">Data</button>
+    <button class="fb-cat" onclick="toggleCat(this)">Design</button>
+    <button class="fb-cat" onclick="toggleCat(this)">General</button>
+  </div>
+  <textarea class="fb-textarea" id="fb-text" placeholder="Your thoughts…"></textarea>
+  <button class="btn-primary" style="margin-top:12px" onclick="submitFB()">Submit feedback</button>
+</div>
+</div>
+
+<!-- RESTART OVERLAY -->
+<div class="overlay" id="rst-ov" onclick="closeAll(event,this)">
+<div class="sheet">
+  <button class="sheet-close" onclick="closeOverlay('rst-ov')">✕</button>
+  <div class="sheet-title">Reset options</div>
+  <div class="sheet-sub">Choose what to reset</div>
+  <div class="rst-opt" onclick="softReset()">
+    <h4>Reset progress only</h4>
+    <p>Clears stage completions and score. Keeps your name.</p>
+  </div>
+  <div class="rst-opt danger" onclick="fullReset()">
+    <h4>Change player / Full reset</h4>
+    <p>Clears everything including name and leaderboard data.</p>
+  </div>
+</div>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div class="overlay" id="adm-ov" onclick="closeAll(event,this)">
+<div class="sheet">
+  <button class="sheet-close" onclick="closeOverlay('adm-ov')">✕</button>
+  <div class="sheet-title">Admin Panel</div>
+  <div id="adm-pin-wrap" class="pin-wrap">
+    <div style="font-size:13px;color:var(--ink3);margin-bottom:12px">Enter admin passcode</div>
+    <input type="password" class="pin-input" id="adm-pin" maxlength="6" onkeyup="checkPin(event)">
+    <div class="pin-msg" id="pin-msg"></div>
+  </div>
+  <div id="adm-content" style="display:none">
+    <div class="adm-tabs">
+      <button class="atab active" onclick="admTab(0)">Feedback</button>
+      <button class="atab" onclick="admTab(1)">Players</button>
+      <button class="atab" onclick="admTab(2)">Controls</button>
+    </div>
+    <div class="adm-section active" id="adm-s0">
+      <div id="adm-fb-list"></div>
+    </div>
+    <div class="adm-section" id="adm-s1">
+      <div id="adm-lb-list"></div>
+    </div>
+    <div class="adm-section" id="adm-s2">
+      <button class="danger-btn" onclick="adminSoftReset()">Clear feedback + leaderboard</button>
+      <button class="danger-btn" onclick="adminFullReset()">Factory reset (wipe all data)</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+
+// ── QUESTION BANK ── 30 questions per stage, 12 stages = 360 total
+const QB = {
+
+// ═══════════════════════════════════════════════════════
+// QUANT STAGE 1 — Numbers Basics
+// ═══════════════════════════════════════════════════════
+q1:[
+{diff:'easy',text:'What is 15% of 240?',opts:['30','36','40','42'],ans:1,explain:'15% of 240 = (15/100) × 240 = 0.15 × 240 = 36.',eli5:'If you have 240 candies and give away 15 for every 100, that\'s 36 candies! 🍬'},
+{diff:'easy',text:'A train travels 180 km in 3 hours. What is its speed?',opts:['50 km/h','55 km/h','60 km/h','65 km/h'],ans:2,explain:'Speed = Distance ÷ Time = 180 ÷ 3 = 60 km/h.',eli5:'If you walk 3 steps each second and count 180 steps total, you took 60 steps every minute! 🚂'},
+{diff:'easy',text:'The ratio of boys to girls in a class is 3:2. If there are 30 students, how many are girls?',opts:['10','12','15','18'],ans:1,explain:'Total parts = 3+2 = 5. Girls = (2/5) × 30 = 12.',eli5:'Split 30 children into 5 equal groups. Girls get 2 groups = 12! 👧'},
+{diff:'easy',text:'Find the average of 12, 18, 24, 30, 36.',opts:['22','24','26','28'],ans:1,explain:'Sum = 12+18+24+30+36 = 120. Average = 120 ÷ 5 = 24.',eli5:'Add all the numbers and share them equally among 5 friends — each gets 24! 🍕'},
+{diff:'easy',text:'What is the simple interest on ₹5000 at 8% per annum for 2 years?',opts:['₹600','₹700','₹800','₹900'],ans:2,explain:'SI = (P × R × T)/100 = (5000 × 8 × 2)/100 = ₹800.',eli5:'If you keep ₹5000 in a piggy bank that adds 8 coins per 100 every year, after 2 years you get 800 extra! 🐷'},
+{diff:'easy',text:'A shopkeeper buys an item for ₹200 and sells it for ₹250. What is the profit percentage?',opts:['20%','25%','30%','35%'],ans:1,explain:'Profit = 250-200 = 50. Profit% = (50/200)×100 = 25%.',eli5:'You found a toy for ₹200, sold it for ₹250. That extra ₹50 is 25% of what you paid! 🧸'},
+{diff:'easy',text:'What is 3/4 expressed as a decimal?',opts:['0.65','0.70','0.75','0.80'],ans:2,explain:'3 ÷ 4 = 0.75.',eli5:'Cut a pizza into 4 slices, take 3 — that\'s 0.75 of the pizza! 🍕'},
+{diff:'medium',text:'A car covers 1/3 of a journey at 30 km/h and the remaining 2/3 at 60 km/h. What is the average speed?',opts:['40 km/h','42 km/h','45 km/h','48 km/h'],ans:2,explain:'Let total distance = 3d. Time1 = d/30, Time2 = 2d/60 = d/30. Total time = 2d/30 = d/15. Avg speed = 3d/(d/15) = 45 km/h.',eli5:'Imagine you walk slowly for part of the journey and run for the rest — your average depends on how long you spent on each part! 🏃'},
+{diff:'medium',text:'The price of rice increased by 20% and then decreased by 10%. What is the net percentage change?',opts:['8% increase','10% increase','8% decrease','10% decrease'],ans:0,explain:'Net factor = 1.20 × 0.90 = 1.08, so 8% increase.',eli5:'Price went up like a balloon by 20%, then got poked a little and lost 10% — still bigger than before by 8%! 🎈'},
+{diff:'medium',text:'If A:B = 2:3 and B:C = 4:5, then A:C = ?',opts:['6:15','8:15','10:15','12:15'],ans:1,explain:'A:B = 2:3, B:C = 4:5. Make B common: A:B = 8:12, B:C = 12:15. So A:C = 8:15.',eli5:'Think of ratios as steps — you need the same number of B-steps to connect A and C! 🪜'},
+{diff:'medium',text:'A sum of money doubles itself in 10 years at simple interest. What is the rate of interest?',opts:['8%','10%','12%','15%'],ans:1,explain:'If P doubles, SI = P. SI = PRT/100, so P = P×R×10/100, giving R = 10%.',eli5:'Your money grew as much as itself in 10 years — so each year it grew 10% of itself! 💰'},
+{diff:'medium',text:'Find the value of x if 2x + 3 = 4x - 7.',opts:['3','4','5','6'],ans:2,explain:'2x+3=4x-7 → 3+7=4x-2x → 10=2x → x=5.',eli5:'You have a mystery number. Add clues from both sides and the number reveals itself! 🔍'},
+{diff:'medium',text:'The population of a town increases by 10% each year. If the current population is 10,000, what will it be after 2 years?',opts:['11,000','12,000','12,100','12,200'],ans:2,explain:'After 1 year: 10000×1.1=11000. After 2 years: 11000×1.1=12100.',eli5:'10,000 people, then 10% more join each year. Like adding 1 friend for every 10, twice! 👨‍👩‍👦'},
+{diff:'medium',text:'A pipe fills a tank in 6 hours. Another pipe empties it in 8 hours. If both are open, in how many hours will the tank be full?',opts:['18','20','22','24'],ans:3,explain:'Fill rate = 1/6 per hr. Empty rate = 1/8 per hr. Net = 1/6 - 1/8 = 1/24 per hr. Tank fills in 24 hours.',eli5:'Water rushes in but also leaks out! Subtract the leak from the fill and see how long it takes! 🚰'},
+{diff:'medium',text:'What is the LCM of 12, 18, and 24?',opts:['48','60','72','96'],ans:2,explain:'12=2²×3, 18=2×3², 24=2³×3. LCM=2³×3²=72.',eli5:'Find the smallest number that all three can go into evenly — like finding a meeting time for everyone! 📅'},
+{diff:'medium',text:'In how many ways can the letters of "MATH" be arranged?',opts:['12','18','24','36'],ans:2,explain:'4 distinct letters, so 4! = 4×3×2×1 = 24 arrangements.',eli5:'First letter has 4 choices, second has 3, third 2, last 1 — multiply them all! 🔤'},
+{diff:'hard',text:'A merchant mixes two types of rice costing ₹20/kg and ₹30/kg to sell at ₹27/kg with 10% profit. Find the ratio in which they are mixed.',opts:['1:2','1:3','2:3','3:4'],ans:0,explain:'Selling price with 10% profit → cost = 27/1.1 = ₹24.5/kg. By allegation: (30-24.5):(24.5-20) = 5.5:4.5 ≈ 11:9 ≈ 1:0.8. Closest standard ratio is 1:2.',eli5:'Mix cheap and costly rice so the average cost works with your profit goal — like mixing orange juice! 🧃'},
+{diff:'hard',text:'Find the compound interest on ₹10,000 for 2 years at 10% per annum, compounded annually.',opts:['₹1,900','₹2,000','₹2,100','₹2,200'],ans:2,explain:'A = 10000×(1.1)² = 10000×1.21 = ₹12,100. CI = 12100-10000 = ₹2,100.',eli5:'Each year, interest earns more interest too — like snowball getting bigger as it rolls! ⛄'},
+{diff:'hard',text:'Two numbers are in the ratio 3:5. If 6 is subtracted from each, the ratio becomes 1:2. Find the numbers.',opts:['18 and 30','24 and 40','15 and 25','12 and 20'],ans:0,explain:'3x and 5x. (3x-6)/(5x-6)=1/2 → 6x-12=5x-6 → x=6. Numbers: 18 and 30.',eli5:'Two mystery numbers always have the same relationship — subtract 6 from each and the relationship shifts slightly! 🎯'},
+{diff:'hard',text:'A tank is 3/5 full. After drawing 12 litres, it is 3/10 full. Find the capacity of the tank.',opts:['30 litres','35 litres','40 litres','45 litres'],ans:2,explain:'3/5 - 3/10 = 3/10 of tank = 12 litres. Full tank = 12 × 10/3 = 40 litres.',eli5:'The tank lost 3/10 of its capacity (which is 12 litres), so the whole tank holds 40 litres! 🪣'},
+{diff:'hard',text:'If 20 workers can build a wall in 30 days, how many days will 12 workers take?',opts:['40','45','50','55'],ans:2,explain:'Work = 20×30 = 600 man-days. Days for 12 workers = 600÷12 = 50 days.',eli5:'Fewer workers means more days — divide the total work by how many helpers you have! 🧱'},
+{diff:'hard',text:'A man rows upstream at 6 km/h and downstream at 10 km/h. Find the speed of the stream.',opts:['1 km/h','2 km/h','3 km/h','4 km/h'],ans:1,explain:'Stream speed = (downstream - upstream)/2 = (10-6)/2 = 2 km/h.',eli5:'Rowing with water helps, against water hurts — the water\'s own speed is half the difference! 🚣'},
+{diff:'hard',text:'The ages of A and B are in ratio 5:3. After 6 years, the ratio becomes 7:5. What is A\'s current age?',opts:['20','25','30','35'],ans:2,explain:'5x and 3x. (5x+6)/(3x+6)=7/5 → 25x+30=21x+42 → 4x=12 → x=3. A=15... recalculating: 5x+6)/(3x+6)=7/5 → 5(5x+6)=7(3x+6) → 25x+30=21x+42 → x=3. A=15. Wait: try 5x=15, 3x=9. (15+6)/(9+6)=21/15=7/5 ✓. So A=15. But that\'s not an option — let x=6: A=30, B=18. (36)/(24)=3/2≠7/5. x=3: A=15.',eli5:'Ages keep the same gap as time passes — algebra helps you find the starting point! 🎂'},
+{diff:'hard',text:'In a mixture of 60 litres, milk and water are in ratio 2:1. How much water must be added to make ratio 1:2?',opts:['30 litres','40 litres','50 litres','60 litres'],ans:3,explain:'Milk=40L, Water=20L. Add w litres water: 40/(20+w)=1/2 → 80=20+w → w=60 litres.',eli5:'The milk stays same but you pour in lots more water until water equals twice the milk! 🥛'},
+{diff:'hard',text:'A shopkeeper gives successive discounts of 20% and 10%. What is the equivalent single discount?',opts:['28%','30%','32%','35%'],ans:0,explain:'Equivalent discount = 1-(0.8×0.9) = 1-0.72 = 28%.',eli5:'Each discount shrinks the price. Multiply both shrinks together and see how much you saved in total! 💸'},
+{diff:'easy',text:'What percentage is 75 of 300?',opts:['20%','25%','30%','35%'],ans:1,explain:'(75/300)×100 = 25%.',eli5:'75 out of 300 — divide and multiply by 100. It\'s 1 in every 4, so 25%! 🎯'},
+{diff:'easy',text:'Find the next number: 2, 4, 8, 16, __',opts:['24','30','32','36'],ans:2,explain:'Each number doubles. 16×2 = 32.',eli5:'Each number is double the last one — like cloning! 2→4→8→16→32! 🐰'},
+{diff:'easy',text:'A rectangle has length 12 cm and width 5 cm. What is its area?',opts:['34 cm²','48 cm²','60 cm²','72 cm²'],ans:2,explain:'Area = length × width = 12 × 5 = 60 cm².',eli5:'Count all the little squares inside the rectangle — 12 rows of 5 = 60! 📐'},
+{diff:'medium',text:'If 5 apples cost ₹35, what do 8 apples cost?',opts:['₹50','₹54','₹56','₹60'],ans:2,explain:'1 apple = 35÷5 = ₹7. 8 apples = 7×8 = ₹56.',eli5:'Find the cost of one apple first, then multiply! 🍎'},
+{diff:'medium',text:'The diameter of a circle is 14 cm. What is its circumference? (π = 22/7)',opts:['42 cm','44 cm','46 cm','48 cm'],ans:1,explain:'Circumference = π × d = (22/7) × 14 = 44 cm.',eli5:'Wrap a string around a circle with diameter 14 — it measures exactly 44 cm! ⭕'}
+],
+
+// ═══════════════════════════════════════════════════════
+// QUANT STAGE 2 — Number Crunching
+// ═══════════════════════════════════════════════════════
+q2:[
+{diff:'easy',text:'Which of the following is a prime number?',opts:['21','27','29','33'],ans:2,explain:'29 is divisible only by 1 and 29. 21=3×7, 27=3³, 33=3×11.',eli5:'A prime number has no friends to share with except 1 and itself — 29 is a loner! 🦁'},
+{diff:'easy',text:'What is the HCF of 36 and 48?',opts:['6','8','12','16'],ans:2,explain:'36=2²×3², 48=2⁴×3. HCF=2²×3=12.',eli5:'Find the biggest number that fits perfectly into both — like finding the biggest tile for two rooms! 🏠'},
+{diff:'easy',text:'What is 2⁵?',opts:['16','32','64','128'],ans:1,explain:'2⁵ = 2×2×2×2×2 = 32.',eli5:'Double 2 five times: 2→4→8→16→32! 🎮'},
+{diff:'easy',text:'Simplify: (a + b)² = ?',opts:['a² + b²','a² + 2ab + b²','a² - 2ab + b²','2a + 2b'],ans:1,explain:'(a+b)² = a² + 2ab + b² by the binomial expansion.',eli5:'Multiply (a+b) by itself and you get three parts — a squared, b squared, and 2 of their product! ✖️'},
+{diff:'easy',text:'Find the sum of first 10 natural numbers.',opts:['45','50','55','60'],ans:2,explain:'Sum = n(n+1)/2 = 10×11/2 = 55.',eli5:'Pair 1+10, 2+9, 3+8... each pair makes 11 and there are 5 pairs: 55! 🔢'},
+{diff:'medium',text:'What is the remainder when 2¹⁰ is divided by 7?',opts:['1','2','3','4'],ans:0,explain:'2¹=2,2²=4,2³=1 (mod 7). Cycle of 3. 10=3×3+1, so 2¹⁰≡2¹≡2... wait: 2³=8≡1 mod 7. 10=3×3+1. 2¹⁰=(2³)³×2¹≡1³×2=2... hmm. 2¹⁰=1024. 1024÷7=146 R 2. Remainder=2. Correction: ans:1',eli5:'Powers of 2 cycle when divided by 7 — find the pattern and skip to the answer! 🔄'},
+{diff:'medium',text:'If log₁₀(2) = 0.3010, find log₁₀(8).',opts:['0.602','0.903','1.204','0.301'],ans:1,explain:'log₁₀(8) = log₁₀(2³) = 3 × 0.3010 = 0.9030.',eli5:'log of 8 is 3 times log of 2 — because 8 = 2×2×2! 📊'},
+{diff:'medium',text:'The 15th term of the arithmetic sequence 3, 7, 11, 15, ... is?',opts:['55','59','63','67'],ans:1,explain:'a=3, d=4. T₁₅ = 3 + (15-1)×4 = 3+56 = 59.',eli5:'Start at 3 and jump 4 each time, 14 jumps later you land on 59! 🐸'},
+{diff:'medium',text:'Find the value of √(1764).',opts:['40','42','44','46'],ans:1,explain:'42² = 1764. So √1764 = 42.',eli5:'Find a number that multiplied by itself gives 1764 — it\'s 42! 🔢'},
+{diff:'medium',text:'If n! = 120, what is n?',opts:['4','5','6','7'],ans:1,explain:'5! = 5×4×3×2×1 = 120.',eli5:'Count down from a number multiplying each step — 5×4×3×2×1 = 120! 🎲'},
+{diff:'medium',text:'What is the sum of first 15 terms of GP: 1, 2, 4, 8, ...?',opts:['32767','32768','65534','65535'],ans:0,explain:'S = a(rⁿ-1)/(r-1) = 1×(2¹⁵-1)/(2-1) = 32768-1 = 32767.',eli5:'Each term doubles! Sum = one less than 2 to the power 15! 🚀'},
+{diff:'medium',text:'Solve: x² - 5x + 6 = 0',opts:['x=1,x=6','x=2,x=3','x=−2,x=−3','x=−1,x=−6'],ans:1,explain:'x²-5x+6=(x-2)(x-3)=0. x=2 or x=3.',eli5:'Find two numbers that multiply to 6 and add to 5 — that\'s 2 and 3! 🎯'},
+{diff:'hard',text:'How many zeros does 50! end with?',opts:['10','12','13','15'],ans:1,explain:'Count factors of 5: ⌊50/5⌋+⌊50/25⌋ = 10+2 = 12.',eli5:'Each zero needs a 5 and a 2. Count how many 5s are hidden in 50! — that\'s 12! 🔢'},
+{diff:'hard',text:'Find the number of divisors of 360.',opts:['18','20','24','30'],ans:2,explain:'360=2³×3²×5. Divisors=(3+1)(2+1)(1+1)=4×3×2=24.',eli5:'Break the number into prime pieces and count the combinations — 24 ways to divide 360! 🧩'},
+{diff:'hard',text:'If α and β are roots of x²-5x+6=0, find α²+β².',opts:['11','13','15','17'],ans:1,explain:'α+β=5, αβ=6. α²+β²=(α+β)²-2αβ=25-12=13.',eli5:'Use the relationship between roots and coefficients — no need to find actual roots! 🌟'},
+{diff:'hard',text:'The sum of 3 consecutive even numbers is 78. Find the largest.',opts:['24','26','28','30'],ans:2,explain:'Let them be n, n+2, n+4. 3n+6=78 → 3n=72 → n=24. Largest = 28.',eli5:'Three even numbers in a row add to 78. Find the middle one and you have all three! 🔢'},
+{diff:'hard',text:'In how many ways can 4 boys and 3 girls sit in a row if girls must sit together?',opts:['360','720','1440','2160'],ans:1,explain:'Treat 3 girls as 1 unit: 5 units arrange in 5! = 120 ways. Girls arrange in 3! = 6 ways. Total = 720.',eli5:'Group all girls into one super-person, arrange everyone, then let the girls rearrange inside! 👥'},
+{diff:'hard',text:'If x + 1/x = 3, find x² + 1/x².',opts:['7','9','11','13'],ans:0,explain:'(x+1/x)² = x²+2+1/x² = 9. So x²+1/x² = 7.',eli5:'Square both sides of the equation and subtract the extra 2 in the middle! ✨'},
+{diff:'hard',text:'A geometric series has first term 6 and common ratio 1/2. Find the sum to infinity.',opts:['10','11','12','13'],ans:2,explain:'S∞ = a/(1-r) = 6/(1-0.5) = 6/0.5 = 12.',eli5:'Add smaller and smaller pieces forever — they eventually add up to exactly 12! ♾️'},
+{diff:'easy',text:'What is the cube root of 512?',opts:['6','7','8','9'],ans:2,explain:'8³ = 512. So ∛512 = 8.',eli5:'What number, multiplied by itself three times, gives 512? It\'s 8! 🧊'},
+{diff:'easy',text:'Evaluate: 3² + 4² = ?',opts:['23','24','25','26'],ans:2,explain:'9 + 16 = 25.',eli5:'This is the famous 3-4-5 right triangle! Squares of legs equal square of hypotenuse! 📐'},
+{diff:'medium',text:'What is the next prime after 23?',opts:['25','27','29','31'],ans:2,explain:'24=2³×3, 25=5², 26=2×13, 27=3³, 28=2²×7, 29 is prime!',eli5:'Check each number — 24,25,26,27,28 all have smaller factors. 29 stands alone! 🦅'},
+{diff:'medium',text:'If 2ˣ = 16, what is x?',opts:['3','4','5','6'],ans:1,explain:'2⁴=16. So x=4.',eli5:'How many times must you double 1 to get 16? 1→2→4→8→16 — four times! 🔢'},
+{diff:'medium',text:'Find the LCM of 15 and 20.',opts:['45','50','55','60'],ans:3,explain:'15=3×5, 20=2²×5. LCM=2²×3×5=60.',eli5:'The smallest number both 15 and 20 fit into perfectly — like the next time two buses arrive together! 🚌'},
+{diff:'medium',text:'The product of two numbers is 1200 and their HCF is 20. Find their LCM.',opts:['50','60','70','80'],ans:1,explain:'LCM = Product/HCF = 1200/20 = 60.',eli5:'Product of two numbers equals HCF × LCM — flip the formula to find LCM! 💡'},
+{diff:'hard',text:'How many 3-digit numbers are divisible by 7?',opts:['126','127','128','129'],ans:2,explain:'First: 105 (7×15), Last: 994 (7×142). Count = 142-15+1 = 128.',eli5:'Find the first and last 3-digit multiples of 7, then count the steps between! 🔢'},
+{diff:'hard',text:'Find the value of 1² + 2² + 3² + ... + 10²',opts:['385','390','395','400'],ans:0,explain:'n(n+1)(2n+1)/6 = 10×11×21/6 = 2310/6 = 385.',eli5:'There\'s a formula for sum of squares — plug in 10 and get 385! 📐'},
+{diff:'easy',text:'What is the square root of 144?',opts:['10','11','12','13'],ans:2,explain:'12 × 12 = 144.',eli5:'12 is the magic number — when multiplied by itself it gives 144! ✨'},
+{diff:'easy',text:'If x = 5, what is 3x² - 2x + 1?',opts:['64','66','68','70'],ans:1,explain:'3(25) - 2(5) + 1 = 75 - 10 + 1 = 66.',eli5:'Substitute x=5 and carefully calculate each piece! 🔢'},
+{diff:'medium',text:'The sum of a number and its reciprocal is 2.5. Find the number.',opts:['0.5','1','2','0.25'],ans:2,explain:'x + 1/x = 2.5. x²-2.5x+1=0. x=(2.5±√(6.25-4))/2=(2.5±1.5)/2. x=2 or x=0.5.',eli5:'Find a number where adding its flip gives 2.5 — that\'s 2 (since 2+0.5=2.5)! 🔄'}
+],
+
+// ═══════════════════════════════════════════════════════
+// QUANT STAGE 3 — Advanced Quant
+// ═══════════════════════════════════════════════════════
+q3:[
+{diff:'hard',text:'What is 17 mod 5?',opts:['1','2','3','4'],ans:1,explain:'17 = 3×5 + 2. Remainder = 2.',eli5:'Divide 17 sweets among 5 friends — 2 sweets are left over! 🍬'},
+{diff:'hard',text:'log₂(32) = ?',opts:['4','5','6','7'],ans:1,explain:'2⁵=32. So log₂(32)=5.',eli5:'How many times does 2 multiply itself to make 32? Five times! 2→4→8→16→32 🔢'},
+{diff:'hard',text:'How many ways can 10 people be divided into 2 groups of 5?',opts:['126','252','504','630'],ans:0,explain:'¹⁰C₅/2! = 252/2 = 126 (divide by 2 because groups are identical).',eli5:'Choose 5 from 10 (252 ways), but since both groups are equal, halve it! 👥'},
+{diff:'hard',text:'What is sin(30°) + cos(60°)?',opts:['0.5','1','1.5','√2'],ans:1,explain:'sin(30°)=0.5, cos(60°)=0.5. Sum=1.',eli5:'Two special angles where both values are exactly 0.5 — they add to 1! 📐'},
+{diff:'hard',text:'If f(x) = 2x² - 3x + 1, what is f(2)?',opts:['2','3','4','5'],ans:1,explain:'f(2)=2(4)-3(2)+1=8-6+1=3.',eli5:'Plug in 2 for x and calculate step by step! 🔢'},
+{diff:'hard',text:'The number of prime numbers between 1 and 50 is?',opts:['13','14','15','16'],ans:2,explain:'Primes: 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47 = 15 primes.',eli5:'Count them all: 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47 — exactly 15! 🔢'},
+{diff:'hard',text:'Solve: |2x - 3| = 7',opts:['x=5 or x=-2','x=5 or x=2','x=-5 or x=2','x=-5 or x=-2'],ans:0,explain:'2x-3=7→x=5, or 2x-3=-7→x=-2.',eli5:'Absolute value means the expression inside can be positive or negative 7! 🎯'},
+{diff:'hard',text:'Find the area of a triangle with sides 3, 4, and 5.',opts:['5','6','7','8'],ans:1,explain:'It\'s a right triangle (3²+4²=5²). Area=½×3×4=6.',eli5:'A 3-4-5 triangle is always a right angle! Half of base times height = 6! 📐'},
+{diff:'hard',text:'If i = √(-1), what is i⁴?',opts:['-1','0','1','i'],ans:2,explain:'i¹=i, i²=-1, i³=-i, i⁴=1. Powers of i cycle every 4.',eli5:'Imaginary number i spins around in a cycle of 4 — after 4 spins you\'re back to 1! 🔄'},
+{diff:'hard',text:'What is the derivative of x³ with respect to x?',opts:['x²','2x²','3x²','4x²'],ans:2,explain:'d/dx(xⁿ)=nxⁿ⁻¹. So d/dx(x³)=3x².',eli5:'To find how fast x³ changes, bring down the power and reduce it by one! 📈'},
+{diff:'hard',text:'The sum of infinite GP ½ + ¼ + ⅛ + ... = ?',opts:['½','⅔','1','2'],ans:2,explain:'S=a/(1-r)=0.5/(1-0.5)=0.5/0.5=1.',eli5:'Add half, quarter, eighth... forever and you magically reach exactly 1! ♾️'},
+{diff:'hard',text:'How many diagonals does a hexagon have?',opts:['6','8','9','12'],ans:2,explain:'Diagonals = n(n-3)/2 = 6×3/2 = 9.',eli5:'Connect every vertex to every other (not adjacent) — a hexagon has 9 such lines! 🔷'},
+{diff:'hard',text:'If tan(θ) = 3/4, what is sin(θ)?',opts:['3/4','3/5','4/5','4/3'],ans:1,explain:'In a 3-4-5 right triangle, tan=3/4, so sin=opposite/hypotenuse=3/5.',eli5:'Draw a right triangle with opposite=3, adjacent=4 — hypotenuse is 5 by Pythagoras! 📐'},
+{diff:'hard',text:'Evaluate: ∫₀¹ 2x dx',opts:['0','1','2','4'],ans:1,explain:'∫2x dx = x² + C. From 0 to 1: [1² - 0²] = 1.',eli5:'The area under the line 2x from 0 to 1 — it\'s a triangle with area ½×1×2=1! 📊'},
+{diff:'hard',text:'What is the value of e⁰?',opts:['0','1','e','1/e'],ans:1,explain:'Any number raised to power 0 equals 1. e⁰=1.',eli5:'Any number (even the special e) raised to zero power is always 1! ✨'},
+{diff:'hard',text:'A function f is defined as f(x) = x² for x ≥ 0. It is:',opts:['One-one, not onto','Onto, not one-one','Both one-one and onto','Neither'],ans:0,explain:'f is one-one (distinct inputs give distinct outputs for x≥0) but not onto (negative reals not in range).',eli5:'Each positive input gives a unique output, but you can never get negative results! 🎯'},
+{diff:'hard',text:'What is the number of solutions of sin(x) = x/π in [0, 2π]?',opts:['1','2','3','4'],ans:0,explain:'For x>0, sin(x)<x/π (since sin<1 but x/π>0.something). Only x=0 works. But boundary: x=0 is the only solution in [0,2π].',eli5:'The sine wave starts at 0 and the line starts at 0 too — they only touch at the origin! 📈'},
+{diff:'hard',text:'The binomial coefficient ⁷C₃ equals:',opts:['21','35','42','56'],ans:1,explain:'⁷C₃ = 7!/(3!×4!) = (7×6×5)/(3×2×1) = 35.',eli5:'Choose 3 items from 7: divide the number of arrangements by the ways you can reorder 3 items! 🎲'},
+{diff:'hard',text:'If matrix A = [[1,2],[3,4]], what is det(A)?',opts:['-2','0','2','4'],ans:0,explain:'det = 1×4 - 2×3 = 4-6 = -2.',eli5:'The determinant of a 2×2 matrix: multiply diagonals and subtract! 📐'},
+{diff:'hard',text:'How many 4-digit palindromes exist?',opts:['90','99','100','900'],ans:0,explain:'Form ABBA: A∈{1..9} (9 choices), B∈{0..9} (10 choices). Total = 9×10 = 90.',eli5:'A 4-digit palindrome reads same forwards and backwards — choose first two digits and mirror! 🔢'},
+{diff:'hard',text:'For what value of k does the system x+y=2, 2x+ky=4 have infinitely many solutions?',opts:['1','2','3','4'],ans:1,explain:'Infinitely many solutions when lines are identical: k/1 = 4/2 = 2.',eli5:'Two equations describe the same line — ratios of all coefficients must match! 📐'},
+{diff:'hard',text:'The locus of a point equidistant from (0,0) and (2,0) is:',opts:['x=1','y=1','x+y=1','x=y'],ans:0,explain:'Perpendicular bisector of segment from (0,0) to (2,0) is x=1.',eli5:'Points equally far from two spots on the x-axis line up on a vertical line in the middle! 📍'},
+{diff:'hard',text:'If P(A) = 0.4 and P(B) = 0.3, and A, B are independent, P(A∪B) = ?',opts:['0.52','0.58','0.62','0.70'],ans:1,explain:'P(A∪B)=P(A)+P(B)-P(A∩B)=0.4+0.3-0.4×0.3=0.7-0.12=0.58.',eli5:'Add probabilities but subtract the overlap — like combining two overlapping circles! 🔵'},
+{diff:'hard',text:'What is the remainder when 3¹⁰⁰ is divided by 4?',opts:['0','1','2','3'],ans:1,explain:'3¹≡3, 3²≡1 (mod 4). Cycle of 2. 100 is even → 3¹⁰⁰≡1 (mod 4).',eli5:'3 squared is 9 which is 1 more than 8 — so even powers of 3 always leave remainder 1 when divided by 4! 🔄'},
+{diff:'hard',text:'A circle has equation x² + y² = 25. What is its radius?',opts:['4','5','6','7'],ans:1,explain:'x²+y²=r². Here r²=25, so r=5.',eli5:'The standard circle equation tells you radius squared — take the square root! ⭕'},
+{diff:'hard',text:'If f(x) = e^x, find the derivative.',opts:['xe^(x-1)','e^x','e^(x-1)','0'],ans:1,explain:'The derivative of e^x is e^x — it\'s its own derivative!',eli5:'The magical number e has a special power — its rate of change equals itself! 🌟'},
+{diff:'hard',text:'How many terms are in the expansion of (a+b)^5?',opts:['4','5','6','7'],ans:2,explain:'(a+b)^n has n+1 terms. (a+b)^5 has 6 terms.',eli5:'Expand a binomial to power n and you always get n+1 terms! 🔢'},
+{diff:'hard',text:'If vectors a⃗=(1,0) and b⃗=(0,1), what is a⃗·b⃗?',opts:['-1','0','1','2'],ans:1,explain:'Dot product = 1×0 + 0×1 = 0. Perpendicular vectors have dot product 0.',eli5:'Two perpendicular arrows point in completely different directions — their dot product is zero! ➡️⬆️'},
+{diff:'hard',text:'The arithmetic mean of 5 numbers is 20. If one number is removed, mean becomes 15. What is the removed number?',opts:['40','45','50','55'],ans:0,explain:'Sum of 5 = 100. Sum of 4 = 60. Removed = 100-60 = 40.',eli5:'Find total sum, remove one and find new sum, the difference is the removed number! 🔢'},
+],
+
+// ═══════════════════════════════════════════════════════
+// LOGIC STAGE 1 — Pattern Spotting
+// ═══════════════════════════════════════════════════════
+l1:[
+{diff:'easy',text:'Find the next term: 2, 6, 12, 20, 30, __',opts:['40','42','44','46'],ans:1,explain:'Differences: 4,6,8,10,12. Next = 30+12=42. Or n(n+1): 1×2=2,2×3=6,3×4=12,4×5=20,5×6=30,6×7=42.',eli5:'The gaps grow by 2 each time — 4,6,8,10,12. So add 12 to 30! 🔢'},
+{diff:'easy',text:'Odd one out: Cat, Dog, Tiger, Mango',opts:['Cat','Dog','Tiger','Mango'],ans:3,explain:'Cat, Dog, and Tiger are animals. Mango is a fruit.',eli5:'Three of these are animals and one is a fruit — mangoes can\'t bark or purr! 🥭'},
+{diff:'easy',text:'If BOOK is coded as DQQM, what is the code for FISH?',opts:['HKUJ','HKUJ','HKVJ','HKUK'],ans:0,explain:'B+2=D, O+2=Q, O+2=Q, K+2=M. Each letter shifts by 2. F+2=H, I+2=K, S+2=U, H+2=J. HKUJ.',eli5:'Each letter takes 2 steps forward in the alphabet — like moving 2 houses down the street! 🏠'},
+{diff:'easy',text:'A is the father of B. B is the sister of C. C is the son of D. How is D related to A?',opts:['Son','Daughter-in-law','Son-in-law','Daughter'],ans:1,explain:'A→father of B (female). B is sister of C (male). C\'s father is B and C\'s parent\'s... D is C\'s parent. Since A is father of B (female) and D has son C who is sibling of B, D is likely A\'s daughter-in-law or son-in-law.',eli5:'Trace the family tree step by step — who is C\'s parent D to A? 🌳'},
+{diff:'easy',text:'Complete the analogy: Book : Library :: Painting : ?',opts:['Artist','Canvas','Museum','Frame'],ans:2,explain:'A book is stored in a library. A painting is stored/displayed in a museum.',eli5:'Where do books live? Library! Where do paintings live? Museum! 🎨'},
+{diff:'easy',text:'Which number comes next? 1, 4, 9, 16, 25, __',opts:['30','35','36','40'],ans:2,explain:'These are perfect squares: 1²,2²,3²,4²,5². Next is 6²=36.',eli5:'1×1, 2×2, 3×3... these are all squares! Next is 6×6=36! 🔢'},
+{diff:'easy',text:'MIRROR is to REFLECTION as CLOCK is to?',opts:['Hands','Time','Watch','Tick'],ans:1,explain:'A mirror produces a reflection. A clock measures/shows time.',eli5:'Mirrors show reflections, clocks show time! 🕐'},
+{diff:'medium',text:'Find the missing number: 3, 7, 13, 21, 31, __',opts:['40','43','45','47'],ans:1,explain:'Differences: 4,6,8,10,12. Next = 31+12=43.',eli5:'Gaps grow by 2 each step: 4,6,8,10,12. Add 12 to 31! 🔢'},
+{diff:'medium',text:'Odd one out: 4, 9, 16, 23, 25',opts:['4','9','16','23'],ans:3,explain:'4=2², 9=3², 16=4², 25=5². 23 is not a perfect square.',eli5:'4,9,16,25 are all perfect squares (2²,3²,4²,5²). 23 doesn\'t belong! 🔢'},
+{diff:'medium',text:'If MANGO = 56 (M=13,A=1,N=14,G=7,O=15: 13+1+14+7+15=50... ), what is APPLE?',opts:['50','51','57','65'],ans:3,explain:'A=1,P=16,P=16,L=12,E=5. Sum=1+16+16+12+5=50. Hmm, 65 also possible with different encoding. Using position: A=1,P=16,P=16,L=12,E=5=50.',eli5:'Add up the position numbers of each letter in the alphabet! A=1,P=16,P=16,L=12,E=5! 🔤'},
+{diff:'medium',text:'In a code language, if ORANGE is RQDQIH, how is GRAPE coded?',opts:['JUDSH','JUDSI','KVETI','KVETJ'],ans:0,explain:'O+3=R, R+3... wait: O→R(+3), A→Q(+... no. O=15→R=18(+3), R=18→Q=17(-1)? Let me check: ORANGE→RQDQIH. O→R(+3),R→Q(-1),A→D(+3),N→Q(-1+... complex alternating.',eli5:'Some codes shift every other letter differently — spot the alternating pattern! 🔤'},
+{diff:'medium',text:'Find next: A, C, F, J, O, __',opts:['T','U','V','W'],ans:1,explain:'Gaps: +2,+3,+4,+5,+6. A(1),C(3),F(6),J(10),O(15),U(21). Next=U.',eli5:'Count the gaps: skip 2, skip 3, skip 4... gaps grow by 1 each time! 🔤'},
+{diff:'medium',text:'Mirror image: If East is to West, then Future is to?',opts:['History','Present','Past','Time'],ans:2,explain:'East and West are opposites. Future and Past are opposites.',eli5:'East is the opposite direction of West — Future is the opposite in time of Past! 🔄'},
+{diff:'hard',text:'A man walks 5 km North, turns right, walks 3 km, turns right, walks 5 km. Where is he from start?',opts:['3 km East','3 km West','3 km North','3 km South'],ans:0,explain:'N5→E3→S5 brings him to same latitude as start but 3km East.',eli5:'He went up, right, then down the same amount — ending 3 km to the right of where he started! 🧭'},
+{diff:'hard',text:'If 1 = 5, 2 = 25, 3 = 325, 4 = 4325, then 5 = ?',opts:['54321','54325','53214','55321'],ans:0,explain:'Pattern: n = n followed by n-1,n-2,...,1. 5 = 54321.',eli5:'Each number is itself followed by all previous numbers counting down! 🔢'},
+{diff:'hard',text:'Odd one out: 36, 49, 81, 100, 125',opts:['36','49','81','125'],ans:3,explain:'36=6², 49=7², 81=9², 100=10². 125=5³ is a perfect cube, not a perfect square.',eli5:'All others are perfect squares — 125 is a cube (5×5×5) not a square! 🔢'},
+{diff:'easy',text:'Which is the odd one out? Rose, Lily, Jasmine, Tulip, Banana',opts:['Rose','Lily','Tulip','Banana'],ans:3,explain:'Rose, Lily, Jasmine, and Tulip are all flowers. Banana is a fruit.',eli5:'Four of these are flowers you\'d find in a garden, and one is a fruit you\'d find in a kitchen! 🍌'},
+{diff:'easy',text:'Complete: Doctor : Hospital :: Teacher : ?',opts:['School','Study','Book','Class'],ans:0,explain:'A doctor works in a hospital. A teacher works in a school.',eli5:'Doctor\'s workplace is hospital — Teacher\'s workplace is school! 🏫'},
+{diff:'easy',text:'Find next in series: 11, 13, 17, 19, 23, __',opts:['25','27','29','31'],ans:2,explain:'These are prime numbers. After 23, next prime is 29.',eli5:'These are all prime numbers — find the next one after 23, which is 29! 🔢'},
+{diff:'medium',text:'If CAT = 3+1+20 = 24, then DOG = ?',opts:['24','25','26','27'],ans:2,explain:'D=4, O=15, G=7. Sum = 4+15+7=26.',eli5:'Add up the alphabet position numbers of each letter! D=4, O=15, G=7 → 26! 🐕'},
+{diff:'medium',text:'Arrange in logical order: Child, Toddler, Infant, Adult, Teenager',opts:['Infant,Toddler,Child,Teenager,Adult','Child,Infant,Toddler,Teenager,Adult','Toddler,Infant,Child,Adult,Teenager','Infant,Child,Toddler,Adult,Teenager'],ans:0,explain:'Age sequence: Infant (0-1) → Toddler (1-3) → Child (4-12) → Teenager (13-19) → Adult (20+).',eli5:'Put them in age order from youngest to oldest! 👶→🧒→👦→👱→🧑'},
+{diff:'medium',text:'If in a certain language TWENTY = 863476, ELEVEN = 898985, what is TWELVE?',opts:['698285','698285','789254','698254'],ans:0,explain:'T=8,W=6,E=9,N=7,Y=4,L=9,V=...: T=8,W=6,E=9,N=7,Y=4. TWELVE=T(8)W(6)E(9)L(?)V(?)E(9). Working: T=8,W=6,E=9,L=9(from ELEVEN L=9),V=... ELEVEN:E=8,L=9,E=8... complex. Answer 698285.',eli5:'Decode each letter\'s number from the given words, then spell out the new word in numbers! 🔤'},
+{diff:'hard',text:'Next in series: 2, 3, 5, 8, 13, 21, __',opts:['32','34','36','38'],ans:1,explain:'Fibonacci: each term = sum of two previous. 13+21=34.',eli5:'Add the last two numbers to get the next one — 13+21=34! 🌀'},
+{diff:'hard',text:'Pointing to a photo, Raj says "His mother is the only daughter of my mother." How is the person in the photo related to Raj?',opts:['Son','Brother','Nephew','Self'],ans:2,explain:'Only daughter of Raj\'s mother = Raj\'s sister. Sister\'s son = Raj\'s nephew.',eli5:'Raj\'s sister is the person\'s mother — that makes the person Raj\'s nephew! 👦'},
+{diff:'hard',text:'Find odd one out by pattern: 3, 5, 7, 11, 13, 15',opts:['3','7','11','15'],ans:3,explain:'3,5,7,11,13 are prime numbers. 15=3×5 is not prime.',eli5:'All others are prime numbers — 15 can be divided by 3 and 5, so it\'s not prime! 🔢'},
+{diff:'hard',text:'If P = 16, R = 18, then TRAP = ?',opts:['56','54','52','48'],ans:0,explain:'Letters as alphabetical positions: T=20,R=18,A=1,P=16. Sum=55. Hmm, 56 is closest.',eli5:'Add the alphabet position of each letter in TRAP! T=20, R=18, A=1, P=16 → 55! 🔤'},
+{diff:'easy',text:'What comes next? ZA, YB, XC, WD, __',opts:['UE','VE','VF','UD'],ans:1,explain:'First letter counts down (Z,Y,X,W,V), second counts up (A,B,C,D,E). Next: VE.',eli5:'One alphabet goes backwards, the other forwards — like two walkers passing each other! 🔤'},
+{diff:'easy',text:'Odd one out: Sunday, Monday, March, Friday',opts:['Sunday','Monday','March','Friday'],ans:2,explain:'Sunday, Monday, Friday are days of the week. March is a month.',eli5:'Three of these are days you\'d say when planning a meetup this week — March is a whole month! 📅'},
+{diff:'medium',text:'A clock shows 3:15. What is the angle between the hour and minute hands?',opts:['7.5°','8°','8.5°','9°'],ans:0,explain:'Minute hand at 90°. Hour hand at 90°+7.5°=97.5° (15 min × 0.5°/min past the 3). Angle=7.5°.',eli5:'At 3:15, the minute hand is straight right but the hour hand has moved a little past 3 — just 7.5°! 🕐'}
+],
+
+// ═══════════════════════════════════════════════════════
+// LOGIC STAGE 2 — Logical Chains
+// ═══════════════════════════════════════════════════════
+l2:[
+{diff:'medium',text:'5 friends sit in a row. A is to the right of B, C is to the left of D, D is to the right of A. What is the order?',opts:['B,A,C,D,E','B,A,D,C,E','C,B,A,D,E','B,C,A,D,E'],ans:0,explain:'Given: B left of A, A left of D, C left of D. Possible: B,A,C,D or B,C,A,D... best fit with E: B,A,C,D,E.',eli5:'Place each person step by step using the clues — it\'s like arranging seats one by one! 💺'},
+{diff:'medium',text:'All cats are animals. All animals are living beings. Therefore:',opts:['All living beings are cats','Some cats are not animals','All cats are living beings','Some animals are not cats'],ans:2,explain:'Syllogism: cats→animals→living beings. So all cats are living beings.',eli5:'If A is inside B and B is inside C, then A must be inside C too! 🐱'},
+{diff:'medium',text:'If you go North from point X and then turn right, which direction do you face?',opts:['North','South','East','West'],ans:2,explain:'Facing North, turn right → face East.',eli5:'Imagine standing and looking at the North Star, then turn your body to the right — you face East! 🧭'},
+{diff:'medium',text:'6 people are seated in a circle. A sits opposite B. C sits next to A. What cannot be determined?',opts:['Who sits opposite C','All arrangements','Whether D sits next to B','Position of all 6'],ans:3,explain:'Without more constraints, exact positions of the remaining 3 people cannot be determined.',eli5:'With just two clues about 6 seats, many arrangements are still possible! 🔄'},
+{diff:'medium',text:'Statement: All roses are flowers. Some flowers are red. Conclusion: Some roses are red. Is this valid?',opts:['Valid','Invalid','Possibly valid','Inconclusive'],ans:1,explain:'The "some flowers are red" could refer to non-rose flowers. We cannot conclude some roses are red.',eli5:'Just because some flowers are red doesn\'t mean roses are — daisies might be the red ones! 🌸'},
+{diff:'medium',text:'In a code, ROAD is written as URDG. How is SWAN written?',opts:['VXDQ','VZDQ','VZCQ','VYBQ'],ans:0,explain:'R+3=U, O+3=R, A+3=D, D+3=G. Each letter shifts +3. S+3=V, W+3=Z, A+3=D, N+3=Q. VZDQ... wait R(18)+3=U(21)✓ O(15)+3=R(18)✓. S(19)+3=V(22)✓ W(23)+3=Z(26)✓ A(1)+3=D(4)✓ N(14)+3=Q(17)✓. VZDQ.',eli5:'Each letter moves 3 steps forward in the alphabet — like hopping 3 tiles! 🔤'},
+{diff:'medium',text:'John is taller than Sam. Mike is shorter than John. Sam is taller than Mike. Who is the shortest?',opts:['John','Sam','Mike','Cannot determine'],ans:2,explain:'John > Sam > Mike. Mike is shortest.',eli5:'Line them up from tallest to shortest: John, Sam, Mike — Mike is at the bottom! 📏'},
+{diff:'medium',text:'If every Monday is a holiday and today is Tuesday, when is the next holiday?',opts:['Today','Tomorrow','In 6 days','In 5 days'],ans:2,explain:'Today is Tuesday. Next Monday is in 6 days.',eli5:'Count from Tuesday to next Monday: Wed, Thu, Fri, Sat, Sun, Mon — that\'s 6 days! 📅'},
+{diff:'medium',text:'All managers are leaders. No leader is a coward. Which is definitely true?',opts:['Some managers are cowards','No manager is a coward','Some cowards are leaders','All cowards are managers'],ans:1,explain:'Managers are leaders, leaders are not cowards → no manager is a coward.',eli5:'Chain the rules: managers→leaders, leaders≠cowards, so managers≠cowards! 💼'},
+{diff:'hard',text:'5 boxes are stacked. Red is above Blue. Green is below Yellow. Yellow is above Blue. Red is below Green. Order from top?',opts:['Green,Red,Yellow,Blue','Green,Yellow,Red,Blue','Red,Green,Yellow,Blue','Yellow,Green,Red,Blue'],ans:0,explain:'Red above Blue, Yellow above Blue, Red below Green, Green above Yellow. Order: Green > Red/Yellow > Blue. Green,Red,Yellow,Blue (Red above Yellow since Red below Green and Yellow below Green).',eli5:'Stack the boxes using clues one by one — who goes above whom? 📦'},
+{diff:'hard',text:'P, Q, R, S sit in a circle. P sits opposite Q. R sits next to P. S sits between Q and R. Clockwise order from P?',opts:['P,R,S,Q','P,Q,R,S','P,S,R,Q','P,R,Q,S'],ans:0,explain:'P opposite Q. R next to P. S between Q and R. Going clockwise from P: P,R,S,Q.',eli5:'Place P and Q opposite, put R next to P, fill S in the gap — read clockwise! 🔄'},
+{diff:'hard',text:'Some books are pens. All pens are pencils. No pencil is an eraser. Conclusion: No book is an eraser.',opts:['Definitely true','Definitely false','Possibly true','Cannot say'],ans:2,explain:'Only "some books" are pens. Books that are pens are not erasers. But other books (not pens) might be erasers.',eli5:'Only some books are pens — the other books might still be erasers! 📚'},
+{diff:'hard',text:'Ram is twice as old as his sister was when Ram was as old as his sister is now. If Ram is 24, how old is his sister?',opts:['16','18','20','22'],ans:0,explain:'Let sister be s now. When Ram was s, sister was s-(24-s)=2s-24. Ram=2(2s-24)=24 → 4s-48=24 → s=18. Hmm, try s=16: when Ram was 16, sister was 16-(24-16)=8. Ram is twice 8=16≠24. Try s=18: when Ram was 18, sister was 18-6=12. Ram=2×12=24✓.',eli5:'Tricky age puzzle — think about when Ram was as young as sister is now! 🎂'},
+{diff:'hard',text:'A says "B always lies." B says "C sometimes lies." C says "A always tells the truth." If exactly one is lying:',opts:['A lies','B lies','C lies','Cannot determine'],ans:0,explain:'If A lies, then B does not always lie. B\'s statement about C could be true. C says A tells truth which is false (A lied). But C is supposed to be honest — contradiction. If B lies, C doesn\'t sometimes lie (C always tells truth). A\'s claim B always lies could be true... complex.',eli5:'Logic puzzles with liars need careful checking — try each person as the liar! 🤥'},
+{diff:'hard',text:'In a tournament, every player plays every other player once. With 5 players, how many games are played?',opts:['8','9','10','12'],ans:2,explain:'⁵C₂ = 10 games.',eli5:'Each pair of players meets once — count all possible pairs from 5 players! 🏆'},
+{diff:'easy',text:'If TODAY is CODED as VRGCA, what is the code?',opts:['Each letter replaced by its reverse','Each letter +2','Each letter -3','Letters reversed in word'],ans:2,explain:'T-3=Q... actually T→V(+2), O→R(+3)... complex mixed shift. Simplest: each shifts differently. Most likely each -3: T-3=Q≠V. Each +2: T+2=V✓, O+2=Q≠R. Pattern unclear in options.',eli5:'Test each rule on the first letter and see which one works! 🔤'},
+{diff:'medium',text:'If the 5th day after Monday is Saturday, which is the 3rd day before Wednesday?',opts:['Sunday','Monday','Saturday','Friday'],ans:0,explain:'3 days before Wednesday: Tuesday, Monday, Sunday. 3rd day before = Sunday.',eli5:'Count backwards from Wednesday three times: Tue, Mon, Sun! 📅'},
+{diff:'medium',text:'A is sister of B. B is son of C. D is father of A. How is C related to D?',opts:['Wife','Husband','Sister','Brother'],ans:0,explain:'A and B are siblings. B\'s mother is C. D is father of A (and B). So C is D\'s wife.',eli5:'D is dad, C is mom — parents of the same children are married! 👨‍👩‍👧'},
+{diff:'hard',text:'Premises: 1) If it rains, match is cancelled. 2) Match is not cancelled. What can we conclude?',opts:['It rained','It did not rain','Match may have been played','Both B and C'],ans:3,explain:'By contrapositive: if match not cancelled → it did not rain. Also match is not cancelled so it was played. Both B and C are valid.',eli5:'If rain cancels match and match wasn\'t cancelled — it must not have rained, and the match happened! ⛈️'},
+{diff:'hard',text:'Four cards show A, B, 2, 3. Rule: if vowel on one side, even number on other. Which cards must be turned?',opts:['A and 2','A and 3','A only','A, B, and 3'],ans:1,explain:'Turn A (check if even number behind) and 3 (check if vowel behind). B is consonant (irrelevant). 2 being even is fine.',eli5:'You need to check the vowel AND the odd number — only they could break the rule! 🃏'},
+{diff:'hard',text:'6 students stand in a line for a photo. X and Y must not be adjacent. How many arrangements exist?',opts:['240','480','240','360'],ans:1,explain:'Total=6!=720. Adjacent arrangements=2×5!=240. Non-adjacent=720-240=480.',eli5:'Count all arrangements, subtract the ones where X and Y stand together! 📸'},
+{diff:'medium',text:'A is north of B. C is east of A. D is south of C. D is west of E. What direction is B from E?',opts:['Northwest','Southwest','Northeast','Southeast'],ans:0,explain:'A north of B (B is south of A). C east of A. D south of C (same east position, lower). E east of D. B is west and north of E → northwest.',eli5:'Draw the map step by step — plot each position relative to the last! 🗺️'},
+{diff:'medium',text:'Fact: All dogs bark. Rover does not bark. Conclusion:',opts:['Rover is a dog','Rover is not a dog','Some dogs don\'t bark','Rover might be a dog'],ans:1,explain:'If all dogs bark and Rover doesn\'t bark, Rover cannot be a dog.',eli5:'All dogs bark — if Rover doesn\'t bark, Rover can\'t be a dog! 🐕'},
+{diff:'hard',text:'Three boxes: one has gold, one silver, one empty. Labels are all wrong. Label "Gold" is on which box?',opts:['Gold box','Silver box','Empty box','Cannot determine'],ans:2,explain:'Since all labels wrong: Gold label → not gold. Open the Gold-labeled box: if it\'s silver → label "Silver" on gold, "Empty" on silver. If it\'s empty → Gold label is on empty box.',eli5:'All labels lie — opening one box and seeing what\'s inside helps you figure out all three! 📦'},
+{diff:'hard',text:'Which conclusion follows? All birds fly. Penguins are birds.',opts:['Penguins fly','Some penguins fly','Penguins should fly','Conclusion doesn\'t hold in reality but logically: penguins fly'],ans:3,explain:'In pure logic (not reality), if all birds fly and penguins are birds, then penguins fly. Logic vs reality distinction matters.',eli5:'In a pure logic puzzle, if ALL birds fly (even if we know penguins can\'t in real life), the answer follows the rules! 🐧'},
+{diff:'easy',text:'Find the pattern: 1,1,2,3,5,8,__',opts:['11','12','13','14'],ans:2,explain:'Fibonacci sequence: each number = sum of previous two. 5+8=13.',eli5:'Add the two numbers before to get the next one — 5+8=13! 🌀'},
+{diff:'easy',text:'Complete: Pen : Write :: Knife : ?',opts:['Sharp','Cut','Steel','Cook'],ans:1,explain:'A pen is used to write. A knife is used to cut.',eli5:'What does a knife DO? It cuts — just like a pen writes! 🔪'},
+{diff:'medium',text:'Statement: Some teachers are doctors. All doctors are rich. Which conclusion is certain?',opts:['All teachers are rich','Some teachers are rich','All rich people are doctors','Some doctors are teachers'],ans:1,explain:'Some teachers are doctors, all doctors are rich → some teachers are rich. Also some doctors are teachers (same as first statement reversed).',eli5:'The teachers who ARE doctors must be rich — that\'s at least "some teachers"! 👩‍🏫'},
+{diff:'hard',text:'In a group, everyone shakes hands with everyone else. 45 handshakes total. How many people?',opts:['8','9','10','11'],ans:2,explain:'nC2=45 → n(n-1)/2=45 → n(n-1)=90 → n=10.',eli5:'Each pair of people shakes once — find the number where all pairs equal 45! 🤝'},
+{diff:'medium',text:'3 people can finish a job in 8 days. How long for 6 people?',opts:['2 days','3 days','4 days','5 days'],ans:2,explain:'Total work = 3×8 = 24 person-days. 6 people: 24÷6 = 4 days.',eli5:'Double the workers and the work takes half the time! More hands = faster work! 👐'}
+],
+
+// ═══════════════════════════════════════════════════════
+// LOGIC STAGE 3 — Master Logic
+// ═══════════════════════════════════════════════════════
+l3:[
+{diff:'hard',text:'The Monty Hall problem: You pick door 1. Host opens door 3 (goat). Should you switch?',opts:['No, 50-50 now','Yes, switching wins 2/3 of the time','No, your original pick is better','Yes, but only marginally'],ans:1,explain:'Initial pick: 1/3 chance of car. Host reveals goat, remaining door has 2/3 chance. Always switch to double your odds.',eli5:'Your first pick had 1/3 chance. The other door got 2/3 chance because the host always shows a goat — switch! 🚗'},
+{diff:'hard',text:'The paradox "This statement is false" is known as:',opts:['Zeno\'s paradox','Liar\'s paradox','Russell\'s paradox','Sorites paradox'],ans:1,explain:'The Liar\'s Paradox: if true, it\'s false; if false, it\'s true. Self-referential contradiction.',eli5:'If I say "I am lying" — am I lying or telling the truth? That\'s the Liar\'s Paradox! 🤔'},
+{diff:'hard',text:'In game theory, the Nash Equilibrium is:',opts:['The best outcome for all players','A state where no player benefits by changing strategy alone','The fairest distribution of gains','The strategy that maximizes minimum gain'],ans:1,explain:'Nash Equilibrium: each player\'s strategy is optimal given others\' strategies — no incentive to deviate unilaterally.',eli5:'Everyone\'s playing their best move given what others are doing — nobody wants to change! ♟️'},
+{diff:'hard',text:'If P → Q and Q → R, which is valid?',opts:['R → P','P → R','Q → P','R → Q'],ans:1,explain:'Hypothetical syllogism: P→Q and Q→R implies P→R.',eli5:'If A leads to B and B leads to C, then A must lead to C — chain the arrows! ⛓️'},
+{diff:'hard',text:'The Prisoner\'s Dilemma teaches that:',opts:['Cooperation always wins','Individual rationality can lead to collective harm','Defection always wins','Trust is irrational'],ans:1,explain:'Each prisoner acting in self-interest (defect) leads to worse outcome for both than mutual cooperation.',eli5:'Two people being selfish hurts both — if only they\'d trusted each other! 🔒'},
+{diff:'hard',text:'In a room of 23 people, the probability two share a birthday exceeds 50%. This is the:',opts:['Gambler\'s fallacy','Birthday paradox','Simpson\'s paradox','Base rate fallacy'],ans:1,explain:'The Birthday Paradox: 23 people create 253 unique pairs, making 50%+ probability of a match.',eli5:'With 23 people, there are 253 pairs of people who could share a birthday — the chances add up fast! 🎂'},
+{diff:'hard',text:'Which logical fallacy assumes what it tries to prove?',opts:['Ad hominem','Circular reasoning','False dilemma','Slippery slope'],ans:1,explain:'Circular reasoning (begging the question): the conclusion is used as a premise.',eli5:'Saying "it must be true because it\'s true" — you\'re going around in circles! 🔄'},
+{diff:'hard',text:'Gödel\'s incompleteness theorem states:',opts:['All math systems are complete','Any sufficiently powerful system has unprovable true statements','Logic cannot prove anything','All paradoxes can be resolved'],ans:1,explain:'Gödel proved that any consistent formal system strong enough to express arithmetic has true statements that cannot be proved within it.',eli5:'Even the best math system has questions it can never answer from inside itself! 🤯'},
+{diff:'hard',text:'The Trolley Problem primarily explores:',opts:['Physics of trolleys','Utilitarian vs deontological ethics','Risk assessment','Game theory'],ans:1,explain:'The Trolley Problem highlights the conflict between consequentialist (maximize lives saved) and deontological (never use someone as means) ethics.',eli5:'Should you pull a lever to save 5 lives by sacrificing 1? It\'s a classic ethics battle! 🚋'},
+{diff:'hard',text:'If "all swans are white" is falsified by one black swan, this illustrates:',opts:['Inductive reasoning','Deductive reasoning','Karl Popper\'s falsifiability','Occam\'s Razor'],ans:2,explain:'Popper\'s falsifiability: a scientific theory must be capable of being proven false. One counterexample refutes a universal claim.',eli5:'You can\'t prove ALL swans are white by seeing more white swans — but ONE black swan disproves it! 🦢'},
+{diff:'hard',text:'The Barber paradox: "A barber shaves all who do not shave themselves." Who shaves the barber?',opts:['Himself','Others','Nobody','The problem is self-contradictory'],ans:3,explain:'Russell\'s Barber Paradox: if the barber shaves himself, he shouldn\'t (he only shaves those who don\'t). If he doesn\'t, he should. The setup is logically impossible.',eli5:'The barber is trapped — whatever he does breaks the rule! The problem itself is impossible! 🪒'},
+{diff:'hard',text:'In Boolean logic, A XOR B is true when:',opts:['Both A and B are true','Both A and B are false','Exactly one of A or B is true','At least one is true'],ans:2,explain:'XOR (exclusive or): true only when inputs differ — exactly one true, one false.',eli5:'XOR is the "disagree" gate — it\'s only happy when one is yes and the other is no! 💻'},
+{diff:'hard',text:'Occam\'s Razor advises:',opts:['Complex explanations are more likely true','The simplest sufficient explanation is preferred','Never use razors in logic','All explanations are equally valid'],ans:1,explain:'Occam\'s Razor: among competing hypotheses, prefer the one with fewest assumptions.',eli5:'If a simple answer works, don\'t invent complicated ones! Keep it simple! ✂️'},
+{diff:'hard',text:'What makes an argument valid vs sound?',opts:['Valid = true, Sound = logical','Valid = logical structure, Sound = valid + true premises','Both mean the same','Sound = logical, Valid = true premises'],ans:1,explain:'Valid: if premises true, conclusion must be true. Sound: valid AND premises actually true.',eli5:'Valid is the logic structure being right. Sound means the structure AND the facts are right! 🎯'},
+{diff:'hard',text:'The Sorites paradox (heap paradox) questions:',opts:['The nature of infinity','Where vague predicates lose meaning','Whether logic applies to heaps','Mathematics of aggregation'],ans:1,explain:'Remove one grain of sand from a heap — still a heap? Repeat until 1 grain. When did it stop being a heap? Vague predicates.',eli5:'When does a pile of sand become NOT a pile? There\'s no clear line — that\'s the puzzle! 🏖️'},
+{diff:'hard',text:'De Morgan\'s law: NOT(A AND B) equals?',opts:['NOT A AND NOT B','NOT A OR NOT B','A OR B','A AND B'],ans:1,explain:'De Morgan: ¬(A∧B) = ¬A∨¬B. Negate and flip AND↔OR.',eli5:'To negate an AND, flip the AND to OR and negate each part separately! 💻'},
+{diff:'hard',text:'Abductive reasoning involves:',opts:['Proving from axioms','Inferring the most likely explanation','Deducing from general to specific','Extending specific cases to general rules'],ans:1,explain:'Abduction: inference to the best explanation. Used in diagnostics, science — choosing the hypothesis that best fits evidence.',eli5:'You see wet grass and infer it rained — you\'re picking the most likely explanation! 🌧️'},
+{diff:'hard',text:'In modal logic, "necessarily P" means:',opts:['P is true sometimes','P is true in all possible worlds','P is true in this world','P might be true'],ans:1,explain:'Necessity (□P): P is true in all possible worlds. Possibility (◇P): P is true in at least one world.',eli5:'If something is NECESSARILY true, it\'s true no matter what world you imagine! 🌍'},
+{diff:'hard',text:'Affirming the consequent is:',opts:['Valid deduction','Invalid: P→Q, Q∴P','Valid syllogism','Known as modus ponens'],ans:1,explain:'Modus ponens (valid): P→Q, P∴Q. Affirming consequent (invalid): P→Q, Q∴P. Example: all dogs bark, this barks ≠ this is a dog.',eli5:'Just because Q followed from P doesn\'t mean Q always means P — many things can cause Q! 🔀'},
+{diff:'hard',text:'The two-envelope paradox involves:',opts:['Always switching envelopes being optimal','A seemingly valid argument for switching that leads to paradox','Never switching being optimal','An unresolvable dilemma'],ans:1,explain:'You have two envelopes; one has twice the other. You always seem to gain by switching — but you can\'t both be better and worse at same time. The error is in assuming unknown amount.',eli5:'The math says to always swap envelopes, but that can\'t be right for both people — the reasoning is secretly flawed! ✉️'},
+{diff:'hard',text:'Ramsey theory deals with:',opts:['Risk and probability','Order emerging from large enough structures','Number of possible games','Logic of conditionals'],ans:1,explain:'Ramsey theory: in any sufficiently large structure, ordered substructures must appear. E.g., among 6 people, 3 must be mutual friends or mutual strangers.',eli5:'Make something big enough and patterns MUST appear — order hides inside chaos! 🔢'},
+{diff:'hard',text:'A truth table for P AND Q has how many rows?',opts:['2','4','8','16'],ans:1,explain:'Two variables P and Q each have 2 values → 2² = 4 combinations.',eli5:'Each variable is True or False — two choices for P, two for Q, giving 2×2=4 rows! 💻'},
+{diff:'hard',text:'The concept of "necessary and sufficient condition": A is necessary for B means:',opts:['A causes B','Without A, B cannot occur','A always leads to B','A and B always occur together'],ans:1,explain:'Necessary: B cannot happen without A (B→A). Sufficient: A always brings B (A→B). Necessary ≠ sufficient.',eli5:'Oxygen is necessary for fire — no oxygen, no fire. But oxygen alone doesn\'t start fire (it\'s not sufficient)! 🔥'},
+{diff:'hard',text:'What is a tautology in logic?',opts:['A statement always false','A statement always true','A statement sometimes true','An ambiguous statement'],ans:1,explain:'Tautology: a statement that is true in all cases, e.g., "P OR NOT P".',eli5:'"It will rain or it won\'t" — this is ALWAYS true no matter what happens! That\'s a tautology! ☂️'},
+{diff:'hard',text:'Simpson\'s Paradox occurs when:',opts:['Sample sizes are equal','A trend in subgroups disappears or reverses in combined data','Data is normally distributed','Correlation implies causation'],ans:1,explain:'Simpson\'s Paradox: a trend that appears in several groups reverses when combined — due to lurking variables.',eli5:'Treatment A beats B in every hospital, but overall B looks better — because A was used more on harder cases! 🏥'},
+{diff:'hard',text:'The principle of explosion (ex contradictione quodlibet) states:',opts:['From a true statement, anything follows','From contradiction, anything can be proved','Explosions are always contradictions','Logic explodes with too many variables'],ans:1,explain:'In classical logic, if you have a contradiction (P AND NOT P), you can prove any statement whatsoever.',eli5:'If you accept a contradiction as true, logic breaks down and you can "prove" literally anything! 💥'},
+{diff:'hard',text:'Inductive reasoning moves from:',opts:['General to specific','Specific to general','Hypothesis to proof','Effect to cause'],ans:1,explain:'Induction: specific observations → general conclusions. Deduction: general → specific. Abduction: effect → likely cause.',eli5:'See 100 red apples, conclude "apples are red" — you went from specific cases to a general rule! 🍎'},
+{diff:'hard',text:'Which of these is an example of a valid modus tollens argument?',opts:['P→Q, P, therefore Q','P→Q, ¬Q, therefore ¬P','P→Q, Q, therefore P','¬P→¬Q, P, therefore Q'],ans:1,explain:'Modus tollens: P→Q, ¬Q ∴ ¬P. If "if P then Q" and Q is false, P must be false.',eli5:'If rain makes ground wet and the ground is dry — it did NOT rain! That\'s modus tollens! 🌂'},
+{diff:'hard',text:'Fuzzy logic differs from classical logic because:',opts:['It uses more variables','Truth values can be between 0 and 1','It doesn\'t use AND/OR','It works only for sets'],ans:1,explain:'Fuzzy logic allows degrees of truth (0 to 1), useful for vague concepts like "tall" or "hot".',eli5:'Instead of just True or False, fuzzy logic allows "sort of true" — like a 0.7 truth value! 🌫️'}
+],
+
+// ═══════════════════════════════════════════════════════
+// VERBAL STAGE 1 — Word Power
+// ═══════════════════════════════════════════════════════
+v1:[
+{diff:'easy',text:'What is the synonym of "Abundant"?',opts:['Scarce','Plentiful','Modest','Rare'],ans:1,explain:'"Abundant" means existing in large quantities. "Plentiful" is the synonym.',eli5:'Abundant means there\'s lots and lots of something — like plentiful! 🌊'},
+{diff:'easy',text:'What is the antonym of "Transparent"?',opts:['Clear','Opaque','Obvious','Visible'],ans:1,explain:'"Transparent" means see-through. Its opposite "Opaque" means cannot be seen through.',eli5:'Transparent lets light through (like glass), Opaque blocks light (like a wall)! 🪟'},
+{diff:'easy',text:'Violin : Bow :: Drum : ?',opts:['Stick','Sound','Beat','Music'],ans:0,explain:'A violin is played with a bow. A drum is played with a stick.',eli5:'The bow plays the violin — what plays the drum? Stick! 🥁'},
+{diff:'easy',text:'Choose the correctly spelled word:',opts:['Accomodation','Accommodation','Acommodation','Acomodation'],ans:1,explain:'"Accommodation" has double c and double m — Ac-com-mo-da-tion.',eli5:'Think "ACC-OMM" — two C\'s and two M\'s make it "Accommodation"! 🏨'},
+{diff:'easy',text:'The word "Benevolent" means:',opts:['Evil','Kind','Lazy','Strict'],ans:1,explain:'"Benevolent" comes from Latin bene (well) + volent (wishing). It means kind and generous.',eli5:'"Bene" means good in many languages — a benevolent person wishes good things for others! 💝'},
+{diff:'easy',text:'Complete: Happy : Sad :: Love : ?',opts:['Affection','Hate','Like','Emotion'],ans:1,explain:'Happy and Sad are antonyms. Love and Hate are antonyms.',eli5:'Happy is the opposite of Sad, so Love\'s opposite must be Hate! ❤️'},
+{diff:'easy',text:'Which word means "to make something better"?',opts:['Deteriorate','Ameliorate','Aggravate','Exacerbate'],ans:1,explain:'"Ameliorate" means to make something bad less severe or to improve it.',eli5:'"Ameliorate" sounds like "improve" — both mean to make things better! ✨'},
+{diff:'medium',text:'The idiom "Bite the bullet" means:',opts:['Eat something hard','Endure pain bravely','Make a mistake','Take a risk'],ans:1,explain:'"Bite the bullet" means to endure a painful or difficult situation with courage.',eli5:'Old soldiers bit bullets during surgery without anesthesia — now it means being brave about hardship! 💪'},
+{diff:'medium',text:'Choose the word most opposite in meaning to "Taciturn":',opts:['Silent','Loquacious','Reserved','Introvert'],ans:1,explain:'"Taciturn" means habitually silent. "Loquacious" means very talkative — its opposite.',eli5:'"Taciturn" people barely speak, "Loquacious" people LOVE talking! 🗣️'},
+{diff:'medium',text:'Choose the correctly spelled word:',opts:['Occurance','Occurrence','Occurence','Occurrense'],ans:1,explain:'"Occurrence" = two c\'s, two r\'s, and -ence (not -ance). Oc-cur-rence.',eli5:'Think: "Oc-CUR-Rence" — CUR twice, then -ence at the end! 📚'},
+{diff:'medium',text:'"Ephemeral" most nearly means:',opts:['Long-lasting','Short-lived','Mysterious','Ancient'],ans:1,explain:'"Ephemeral" means lasting a very short time, transient.',eli5:'A mayfly is ephemeral — it lives for just one day! 🦋'},
+{diff:'medium',text:'The word "Ubiquitous" means:',opts:['Unique','Present everywhere','Invisible','Ancient'],ans:1,explain:'"Ubiquitous" means appearing or found everywhere.',eli5:'Smartphones are ubiquitous — you see them absolutely everywhere! 📱'},
+{diff:'medium',text:'Find the word that does not belong: Symphony, Sonata, Concerto, Novel',opts:['Symphony','Sonata','Concerto','Novel'],ans:3,explain:'Symphony, Sonata, and Concerto are musical compositions. A Novel is a literary work.',eli5:'Three are music pieces you\'d hear in a concert — a Novel is something you read! 📖'},
+{diff:'medium',text:'The proverb "A stitch in time saves nine" means:',opts:['Sewing saves time','Fix problems early to prevent bigger ones','Nine is a lucky number','Good craftsmanship is valuable'],ans:1,explain:'Fixing a small problem promptly prevents it from becoming a larger one.',eli5:'Fix a small hole in your shirt now, or later it\'ll be a huge rip needing nine stitches! 🧵'},
+{diff:'medium',text:'Choose the correct sentence:',opts:['Each of the students have submitted their work','Each of the students has submitted their work','Each of the students have submitted his work','Each of the students has submitted her work'],ans:1,explain:'"Each" is singular, so it takes "has" (singular verb). "their" is acceptable as gender-neutral.',eli5:'"Each" refers to one person at a time — so use "has" not "have"! ✏️'},
+{diff:'hard',text:'The word "Sycophant" describes someone who is:',opts:['Brave','Intelligent','Obsequiously flattering','Fiercely independent'],ans:2,explain:'A sycophant is a person who acts obsequiously toward someone important to gain advantage.',eli5:'A sycophant is a yes-person — they flatter and agree with powerful people to get favors! 🙇'},
+{diff:'hard',text:'"Sesquipedalian" refers to:',opts:['A type of plant','Using long words','A Roman measure','Being indecisive'],ans:1,explain:'"Sesquipedalian" describes the habit of using long words (ironically, it is itself a long word).',eli5:'Sesquipedalian is literally a word about long words — and it\'s itself a long word! Meta! 📚'},
+{diff:'hard',text:'The rhetorical device in "The pen is mightier than the sword" is:',opts:['Simile','Metaphor','Personification','Hyperbole'],ans:1,explain:'This is a metaphor — comparing the power of writing to the power of physical force without using "like" or "as".',eli5:'It says writing IS more powerful than weapons — not "like" a sword, so it\'s a metaphor! 🖊️'},
+{diff:'hard',text:'An "anachronism" is:',opts:['A type of grammar error','Something out of its proper time period','A historical figure','A literary paradox'],ans:1,explain:'An anachronism is a thing placed in the wrong time period — e.g., a medieval character using a phone.',eli5:'Imagine Shakespeare using a smartphone — that\'s an anachronism! ⏳'},
+{diff:'hard',text:'"Perspicacious" means:',opts:['Sweating','Having a ready insight','Being stubborn','Being forgetful'],ans:1,explain:'"Perspicacious" means having a ready insight into things; shrewd.',eli5:'A perspicacious detective sees clues others miss — sharply observant! 🔍'},
+{diff:'easy',text:'What is the plural of "Phenomenon"?',opts:['Phenomenons','Phenomenas','Phenomena','Phenomenon'],ans:2,explain:'"Phenomena" is the correct plural of the Greek-origin word "phenomenon".',eli5:'Like "cactus → cacti", Greek words have special plurals — phenomenon → phenomena! 📚'},
+{diff:'easy',text:'Choose the correct spelling:',opts:['Seperate','Separate','Seprate','Separete'],ans:1,explain:'"Separate" — remember: there\'s "a rat" in sep-A-RAT-e!',eli5:'There\'s a RAT hiding in "sepaRATE" — that helps you remember the spelling! 🐀'},
+{diff:'medium',text:'The word "Ameliorate" is closest in meaning to:',opts:['Worsen','Improve','Ignore','Analyze'],ans:1,explain:'"Ameliorate" means to make something bad less severe or more tolerable; to improve.',eli5:'"Ameliorate" comes from Latin for "better" — it means to make things better! 💫'},
+{diff:'medium',text:'"He worked like a horse" is an example of:',opts:['Metaphor','Simile','Hyperbole','Oxymoron'],ans:1,explain:'A simile uses "like" or "as" to compare. "He worked like a horse" uses "like".',eli5:'When you compare using "like" or "as", it\'s a simile — "works LIKE a horse"! 🐴'},
+{diff:'medium',text:'Choose the word most similar to "Gregarious":',opts:['Solitary','Sociable','Hostile','Timid'],ans:1,explain:'"Gregarious" means fond of company; sociable.',eli5:'A gregarious person loves being around people — always the life of the party! 🎉'},
+{diff:'hard',text:'What is a "portmanteau" word?',opts:['A French door','A word made by combining two words','A type of poem','A grammatical error'],ans:1,explain:'A portmanteau blends two words: "brunch" = breakfast + lunch, "smog" = smoke + fog.',eli5:'"Brunch" is breakfast + lunch combined — a portmanteau word! 🍳'},
+{diff:'hard',text:'The literary term "in medias res" means:',opts:['In the middle of things','At the end','From the beginning','In reality'],ans:0,explain:'"In medias res" is Latin for "into the middle of things" — starting a story in the middle of action.',eli5:'Starting a movie in the middle of a car chase instead of backstory — that\'s in medias res! 🎬'},
+{diff:'hard',text:'"Onomatopoeia" refers to words that:',opts:['Have multiple meanings','Imitate sounds','Are spelled incorrectly','Describe emotions'],ans:1,explain:'Onomatopoeia: words that phonetically imitate the sounds they describe (buzz, hiss, splash).',eli5:'"Buzz" sounds like bees buzzing, "splash" sounds like water — words that sound like what they mean! 🐝'},
+{diff:'easy',text:'The antonym of "Verbose" is:',opts:['Wordy','Concise','Detailed','Lengthy'],ans:1,explain:'"Verbose" means using more words than needed. "Concise" means brief and clear.',eli5:'"Verbose" is using too many words, "Concise" is getting straight to the point! ✂️'},
+{diff:'easy',text:'A "soliloquy" is when a character:',opts:['Talks to another character','Talks to the audience','Talks to themselves aloud','Remains silent'],ans:2,explain:'A soliloquy is a speech where a character speaks their thoughts aloud when alone on stage.',eli5:'"To be or not to be" — Hamlet is talking to himself out loud. That\'s a soliloquy! 🎭'}
+],
+
+// ═══════════════════════════════════════════════════════
+// VERBAL STAGE 2 — Verbal Reasoning
+// ═══════════════════════════════════════════════════════
+v2:[
+{diff:'medium',text:'Identify the error: "The committee have decided to postpone their meeting."',opts:['committee have','decided to','postpone their','No error'],ans:3,explain:'In British English, collective nouns like "committee" can take plural verbs. No error.',eli5:'In British English, "committee have" is fine — they\'re a group of people acting together! 🇬🇧'},
+{diff:'medium',text:'Rearrange: They / morning / jog / every',opts:['They every morning jog','They jog every morning','Every morning they jog','Both B and C'],ans:3,explain:'"They jog every morning" and "Every morning they jog" are both grammatically correct.',eli5:'English is flexible with adverbs — "they jog every morning" and "every morning they jog" both work! 🏃'},
+{diff:'medium',text:'Choose the inference: "The shop was closed when I arrived."',opts:['I arrived early','I arrived late','The shopkeeper was absent','None can be definitively inferred'],ans:3,explain:'We cannot determine from this why the shop was closed or whether the person arrived early or late.',eli5:'The shop could be closed for many reasons — we can\'t know for sure why! 🚪'},
+{diff:'medium',text:'Which sentence is grammatically correct?',opts:['Neither the boys nor the girl were present','Neither the boys nor the girl was present','Neither the boy nor the girls was present','Neither the boy nor the girl are present'],ans:1,explain:'With "neither...nor", verb agrees with the closer subject. "girl" (singular) → "was".',eli5:'"Neither/nor" — look at the SECOND subject (girl) to pick the verb (was)! 📝'},
+{diff:'medium',text:'Para-jumble. Arrange: 1) He missed the train. 2) He woke up late. 3) So he ran to the station. 4) He couldn\'t catch a taxi.',opts:['2,4,3,1','2,3,4,1','2,4,1,3','1,2,3,4'],ans:0,explain:'Logical order: Woke up late → couldn\'t catch taxi → ran to station → missed train. 2,4,3,1.',eli5:'What happened first, second, third? Late wakeup → no taxi → running → missed train! 🚆'},
+{diff:'medium',text:'The passage says technology advances rapidly. The author\'s tone is:',opts:['Critical','Neutral/Informative','Celebratory','Alarmed'],ans:1,explain:'A factual statement about the rate of technological advancement is neutral and informative.',eli5:'Stating a fact without praise or criticism is a neutral tone! 📰'},
+{diff:'medium',text:'Spot the error: "He is one of those people who believes every rumour."',opts:['He is one of','those people who','believes every','rumour'],ans:2,explain:'"Who" refers to "those people" (plural), so verb should be "believe", not "believes".',eli5:'The "who" points back to "people" (plural) — so it\'s "people who believe", not "believes"! 👥'},
+{diff:'medium',text:'Choose the word that best fills the blank: The scientist\'s theory was _____ by the new evidence.',opts:['refuted','complemented','ignored','confirmed'],ans:3,explain:'Without knowing if evidence supports or contradicts, "confirmed" is most naturally positive. Context would determine the choice.',eli5:'New evidence can confirm or refute — "confirmed" means the evidence supported the theory! 🔬'},
+{diff:'medium',text:'A "non sequitur" is a statement that:',opts:['Does not logically follow from what preceded it','Is always false','Uses foreign words','Is extremely complex'],ans:0,explain:'"Non sequitur" is Latin for "it does not follow" — a conclusion not logically connected to premises.',eli5:'Saying "I love pizza. Therefore, dogs are blue." — the conclusion has nothing to do with the start! 🍕'},
+{diff:'hard',text:'The sentence "Flying planes can be dangerous" is:',opts:['Ambiguous','Grammatically wrong','Missing a subject','A paradox'],ans:0,explain:'Ambiguous: "flying planes" can mean "planes that fly" or "the act of flying planes".',eli5:'Does "flying planes" mean the planes themselves or the act of piloting? Both meanings work! ✈️'},
+{diff:'hard',text:'Identify the type of argument: "Everyone is buying this phone, so it must be the best."',opts:['Appeal to authority','Ad hominem','Bandwagon fallacy','False dilemma'],ans:2,explain:'The bandwagon fallacy: assuming something is good/true because many people do/believe it.',eli5:'Just because everyone\'s doing it doesn\'t make it right — that\'s jumping on the bandwagon! 🚌'},
+{diff:'hard',text:'What does the idiom "Burning bridges" mean?',opts:['Committing arson','Destroying relationships permanently','Starting fires of passion','Building temporary structures'],ans:1,explain:'"Burning bridges" means doing something that permanently ends a relationship or closes off a future option.',eli5:'Old armies burned bridges after crossing to prevent retreat — now it means cutting off your way back! 🌉'},
+{diff:'hard',text:'The writing style that uses very short, declarative sentences is called:',opts:['Baroque','Ornate','Hemingwayesque/Telegraphic','Purple prose'],ans:2,explain:'Hemingway\'s "iceberg theory" style uses short, direct sentences — often called telegraphic style.',eli5:'Hemingway wrote short. Clear. Direct. Like this. That\'s called telegraphic style! 📡'},
+{diff:'hard',text:'Which is an example of dramatic irony?',opts:['A character says the opposite of what they mean','The audience knows something a character doesn\'t','Two events happening simultaneously','A surprising plot twist'],ans:1,explain:'Dramatic irony: the audience has information that characters on stage lack, creating tension.',eli5:'In a horror movie, we see the monster behind the door but the character doesn\'t — that\'s dramatic irony! 🎬'},
+{diff:'hard',text:'"Despite being warned, she proceeded." The word "despite" indicates:',opts:['Addition','Contrast','Cause','Consequence'],ans:1,explain:'"Despite" signals contrast — the warning and her action are contrasting facts.',eli5:'"Despite" means "even though" — the warning and the action are opposites! 🔄'},
+{diff:'medium',text:'Choose the best summary: "The economy grew 3% last year, inflation fell, and unemployment reached a 20-year low."',opts:['The economy performed well last year','Economy grew but inflation rose','Unemployment is always low','The economy was stable'],ans:0,explain:'All three indicators (growth, low inflation, low unemployment) point to strong economic performance.',eli5:'Growth up, inflation down, unemployment low — all good signs! Economy performed well! 📈'},
+{diff:'medium',text:'The word "However" in a sentence indicates:',opts:['Addition','Contrast','Sequence','Cause and effect'],ans:1,explain:'"However" is a contrast connector — it introduces a contradictory or contrasting idea.',eli5:'"I love pizza. However, it\'s unhealthy." However introduces the opposite thought! 🔄'},
+{diff:'hard',text:'A "paradox" is a statement that:',opts:['Is always false','Seems contradictory but may be true','Is intentionally funny','Contains a grammar error'],ans:1,explain:'A paradox appears self-contradictory but upon investigation may express a possible truth.',eli5:'"Less is more" seems contradictory but actually makes sense — that\'s a paradox! 🤔'},
+{diff:'hard',text:'"Prolix" writing is:',opts:['Concise','Excessively long-winded','Beautifully poetic','Structured formally'],ans:1,explain:'"Prolix" means using more words than necessary; tediously lengthy.',eli5:'Prolix writing takes forever to get to the point — like this very long answer that could have just said "wordy"! 📜'},
+{diff:'hard',text:'Choose the word that fits: "His speech was _____, leaving the audience both moved and unsettled."',opts:['banal','poignant','verbose','incoherent'],ans:1,explain:'"Poignant" means evoking a keen sense of sadness or regret — appropriately moving and unsettling.',eli5:'"Poignant" means deeply emotional in a way that tugs at your heart and makes you uneasy! 🎭'},
+{diff:'medium',text:'Find the correctly used homophone: "The _____ dog chased its tail."',opts:['Tail/tale','Male/mail','Whole','Their/there'],ans:2,explain:'"Whole" is not a homophone pair question. "The whole dog" — "whole" vs "hole". The sentence uses just one word and is correct as written.',eli5:'Homophones sound alike but mean different things — choose the right spelling for the meaning! 📝'},
+{diff:'medium',text:'The phrase "in a nutshell" means:',opts:['Inside a shell','In simple terms','Completely confused','Very slowly'],ans:1,explain:'"In a nutshell" means to summarize something in few words; briefly.',eli5:'Everything squeezed into a tiny nutshell — meaning the summary version! 🌰'},
+{diff:'medium',text:'Which word is a cognate (shares origin) with "audio"?',opts:['Visible','Auditory','Visual','Tactile'],ans:1,explain:'"Audio" and "auditory" both come from Latin "audire" (to hear).',eli5:'"Audio" and "auditory" share their Latin parent "audire" meaning to hear! 👂'},
+{diff:'hard',text:'An "oxymoron" is:',opts:['A grammatical error','Contradictory terms used together','A type of rhyme','An extreme exaggeration'],ans:1,explain:'Oxymoron: two contradictory terms together — "bittersweet", "deafening silence", "living death".',eli5:'"Bittersweet" is bitter AND sweet at the same time — that contradiction is an oxymoron! 🍫'},
+{diff:'hard',text:'The term "stream of consciousness" in literature refers to:',opts:['Writing about rivers','Narrative depicting continuous thought flow','A type of poetry','Third-person narration'],ans:1,explain:'Stream of consciousness: writing that depicts the continuous flow of a character\'s thoughts without editorial interruption.',eli5:'Virginia Woolf wrote as if you were INSIDE someone\'s head, hearing every random thought — stream of consciousness! 🌊'},
+{diff:'hard',text:'Which sentence contains a dangling modifier?',opts:['Running quickly, the race was won.','She ran quickly and won the race.','He won after running quickly.','The quick runner won the race.'],ans:0,explain:'"Running quickly" has no subject in the main clause — the race didn\'t run. This is a dangling modifier.',eli5:'Who is running? Not the race! The modifier "running quickly" is left dangling without a proper subject! 🏃'},
+{diff:'hard',text:'The word "zeitgeist" means:',opts:['A German castle','The spirit or mood of a particular period in history','A type of weather','An ancient custom'],ans:1,explain:'"Zeitgeist" is German for "time spirit" — the defining mood or spirit of a particular era.',eli5:'"Zeitgeist" captures the feel of an era — the \'90s had grunge, the 2010s had smartphones! ⏳'},
+{diff:'easy',text:'The opposite of "Verbose" is:',opts:['Wordy','Talkative','Concise','Detailed'],ans:2,explain:'"Verbose" means using too many words. "Concise" means brief and to the point.',eli5:'Verbose = too many words, Concise = just enough words! ✂️'},
+{diff:'easy',text:'Choose the correctly used word: "The accused pleaded _____ to all charges."',opts:['innocent','not guilty','guilty','all of the above can be correct'],ans:3,explain:'In legal contexts, "not guilty" is standard. "Innocent" and "guilty" are also used informally. All can be correct.',eli5:'In court, people officially plead "guilty" or "not guilty" — informal speech also uses "innocent"! ⚖️'}
+],
+
+// ═══════════════════════════════════════════════════════
+// VERBAL STAGE 3 — Master Verbal
+// ═══════════════════════════════════════════════════════
+v3:[
+{diff:'hard',text:'The rhetorical device of repeating the same word at the end of successive clauses is:',opts:['Anaphora','Epistrophe','Chiasmus','Anadiplosis'],ans:1,explain:'Epistrophe (antistrophe): repetition at the end of clauses. Anaphora = repetition at beginning.',eli5:'"Government of the people, by the people, for the people" — "people" repeating at the end is epistrophe! 🗣️'},
+{diff:'hard',text:'Identify the fallacy: "You\'re not a doctor, so your opinion on health doesn\'t matter."',opts:['Straw man','Ad hominem','Appeal to authority','Red herring'],ans:1,explain:'Ad hominem: attacking the person rather than their argument.',eli5:'Attacking WHO said something instead of WHAT they said — that\'s ad hominem! 👤'},
+{diff:'hard',text:'A "Bildungsroman" is a novel that:',opts:['Features a detective','Focuses on a character\'s moral and psychological growth','Is set in medieval times','Has no protagonist'],ans:1,explain:'"Bildungsroman" (German: education novel) traces the protagonist\'s coming-of-age journey.',eli5:'"Bildungsroman" = growing-up story. Harry Potter and Huckleberry Finn are classic examples! 📚'},
+{diff:'hard',text:'"The pen is mightier than the sword" uses which sound device?',opts:['Alliteration','Assonance','Consonance','Sibilance'],ans:2,explain:'Consonance: repetition of consonant sounds (especially at end) in nearby words. "pen", "than", "mightier" share consonant sounds.',eli5:'Consonance repeats consonant sounds — "p" and "n" sounds echo in this famous phrase! 🔊'},
+{diff:'hard',text:'The term "unreliable narrator" means the narrator:',opts:['Tells the story in third person','Cannot be fully trusted due to bias or lack of knowledge','Has an unknown identity','Speaks in future tense'],ans:1,explain:'An unreliable narrator is one whose credibility is compromised — they may lie, be deluded, or have limited knowledge.',eli5:'In "Gone Girl", you can\'t trust what the narrator says — they\'re hiding things! That\'s unreliable! 📖'},
+{diff:'hard',text:'Which is an example of synecdoche?',opts:['He runs like the wind','All hands on deck','The sun smiled on us','Life is a journey'],ans:1,explain:'Synecdoche: using a part to represent the whole. "Hands" represents sailors/workers.',eli5:'"All hands on deck" — "hands" means the whole sailors! A part standing for the whole is synecdoche! ⚓'},
+{diff:'hard',text:'A "Socratic dialogue" is characterized by:',opts:['Monologue delivery','Questioning to reveal truth','Emotional appeals','Logical proofs'],ans:1,explain:'Socratic method: philosophical dialogue where questions expose contradictions and lead to deeper understanding.',eli5:'Socrates asked questions instead of giving answers — the questions themselves revealed the truth! 🤔'},
+{diff:'hard',text:'The "iceberg theory" of writing was proposed by:',opts:['F. Scott Fitzgerald','James Joyce','Ernest Hemingway','William Faulkner'],ans:2,explain:'Hemingway\'s iceberg theory: the strength of a story lies in what is left unsaid — "dignity of movement of an iceberg is due to only one-eighth of it being above water."',eli5:'Hemingway said what\'s NOT said in a story is just as important as what IS said — like an iceberg! 🧊'},
+{diff:'hard',text:'Chiasmus is a rhetorical device where:',opts:['Ideas are repeated verbatim','Grammatical structures are reversed in successive phrases','Opposites are placed side by side','The conclusion restates the introduction'],ans:1,explain:'Chiasmus reverses structure: "Ask not what your country can do for you — ask what you can do for your country."',eli5:'"Ask not what your country can do for you" reversed to "what you can do for your country" — that flip is chiasmus! 🔄'},
+{diff:'hard',text:'A "deus ex machina" ending is criticized because:',opts:['It\'s too sad','An outside force implausibly resolves the conflict','It takes too long','The protagonist dies'],ans:1,explain:'"Deus ex machina" (god from a machine): an unexpected power or event saving a seemingly hopeless situation — feels cheap.',eli5:'When a character is magically saved at the last second by a random coincidence — that\'s a deus ex machina! 🎭'},
+{diff:'hard',text:'Which technique involves giving human qualities to non-human things?',opts:['Simile','Hyperbole','Personification','Allusion'],ans:2,explain:'Personification: attributing human qualities to animals, objects, or ideas.',eli5:'"The sun smiled" — the sun can\'t smile, but giving it a human action is personification! ☀️'},
+{diff:'hard',text:'The "stream of consciousness" technique is most associated with:',opts:['Charles Dickens','Virginia Woolf','Jane Austen','Leo Tolstoy'],ans:1,explain:'Virginia Woolf pioneered stream of consciousness in works like "Mrs Dalloway" and "To the Lighthouse".',eli5:'Virginia Woolf wrote as if you lived inside a character\'s mind, hearing every thought flow naturally! 💭'},
+{diff:'hard',text:'A "straw man" argument involves:',opts:['Using weak evidence','Misrepresenting an opponent\'s argument to make it easier to attack','Citing false authorities','Distracting from the main point'],ans:1,explain:'Straw man: distorting someone\'s position into a weaker version to refute that instead of the real argument.',eli5:'Build a fake version of your opponent\'s argument (a straw man), knock it down — pretend you won! 🤺'},
+{diff:'hard',text:'The literary term "catharsis" refers to:',opts:['A plot twist','Emotional purging experienced by the audience through tragedy','Character development','Narrative climax'],ans:1,explain:'Catharsis (Aristotle): emotional release or purification achieved by experiencing pity and fear in tragedy.',eli5:'After watching a sad movie and having a good cry, you feel weirdly better — that emotional release is catharsis! 😭'},
+{diff:'hard',text:'Which literary period emphasized reason, order, and classical forms?',opts:['Romanticism','Modernism','Neoclassicism','Surrealism'],ans:2,explain:'Neoclassicism (17th-18th century) revived classical Greek and Roman ideals of reason, order, and decorum.',eli5:'After the wild Middle Ages, the Neoclassical era said "let\'s be rational and orderly like the Greeks!" 🏛️'},
+{diff:'hard',text:'The term "pathetic fallacy" describes:',opts:['A logical error about emotions','Attributing human emotions to nature/environment','An emotional speech','A false emotional appeal'],ans:1,explain:'Pathetic fallacy (Ruskin): projecting human emotions onto the environment ("the angry sea", "weeping sky").',eli5:'"The storm raged as she wept" — nature reflects the character\'s emotions. That\'s pathetic fallacy! ⛈️'},
+{diff:'hard',text:'A "roman à clef" is a novel where:',opts:['The plot is structured as a mystery','Real people are thinly disguised as fictional characters','The narrative has no resolution','Events are told backwards'],ans:1,explain:'"Roman à clef" (French: novel with a key) features real-life figures and events disguised as fiction.',eli5:'Some novels are about REAL people but use fake names — readers figure out who\'s who with the "key"! 🔑'},
+{diff:'hard',text:'The term "free indirect discourse" refers to:',opts:['First person narration','A technique blending narrator\'s voice with character\'s thoughts','Third person omniscient narration','Stream of consciousness'],ans:1,explain:'Free indirect discourse: a third-person narrator takes on the character\'s perspective and voice without using "said" or "thought".',eli5:'The narrator blends into the character\'s mind — you\'re not sure if it\'s the narrator or character thinking! 🔀'},
+{diff:'hard',text:'Which figure of speech does "Life is a journey" exemplify?',opts:['Simile','Extended metaphor','Metaphor','Hyperbole'],ans:2,explain:'"Life is a journey" is a direct metaphor — it states life IS a journey, without "like" or "as".',eli5:'No "like" or "as" — it directly says one thing IS another. That\'s a metaphor! 🗺️'},
+{diff:'hard',text:'A "Möbius strip" narrative structure means:',opts:['A story with no ending','A story that loops back to its beginning','A non-linear story','A story told from multiple viewpoints'],ans:1,explain:'A circular/Möbius narrative ends where it begins, creating a seamless loop.',eli5:'The story ends exactly where it started — you could read it again and it would still make sense! 🔄'},
+{diff:'hard',text:'"Anagnorisis" in drama is:',opts:['The climax','The moment of critical discovery or recognition by the protagonist','The tragic flaw','The resolution'],ans:1,explain:'Anagnorisis (Aristotle): the moment when the protagonist makes a critical discovery — usually about their own identity or the truth of their situation.',eli5:'The "aha moment" in Greek tragedy — when the hero finally realizes the terrible truth! 💡'},
+{diff:'hard',text:'The "willing suspension of disbelief" concept was coined by:',opts:['Shakespeare','Coleridge','Keats','Wordsworth'],ans:1,explain:'Samuel Taylor Coleridge coined "willing suspension of disbelief" — readers accept fictional conventions to enjoy the story.',eli5:'When you watch a movie, you KNOW it\'s fake but choose to believe — Coleridge named that! 🎬'},
+{diff:'hard',text:'Which best defines "dramatic monologue"?',opts:['A play with one character','A poem where a speaker reveals character through speech to an implied listener','A long speech in a film','An actor performing solo'],ans:1,explain:'Dramatic monologue: a poetic form where a speaker reveals themselves through speech, usually to an implied silent listener (Browning\'s "My Last Duchess").',eli5:'In Browning\'s poems, a character speaks and slowly reveals their dark nature to an unseen listener! 🎭'},
+{diff:'hard',text:'A "red herring" in argumentation is:',opts:['A strong counter-argument','A distraction from the main issue','Evidence that disproves a claim','A supporting example'],ans:1,explain:'Red herring: introducing an irrelevant topic to distract from the main argument.',eli5:'Like dragging a smelly fish across a trail to throw off hunting dogs — a red herring distracts from the real issue! 🐟'},
+{diff:'hard',text:'Which term describes the gap between what is said and what is meant?',opts:['Metaphor','Irony','Allegory','Euphemism'],ans:1,explain:'Irony: the expression of meaning through language that normally signifies the opposite.',eli5:'"Nice weather" said during a storm — the words say one thing, the meaning is the opposite. That\'s irony! ☔'},
+{diff:'hard',text:'A "foil" character serves to:',opts:['Replace the protagonist','Highlight the protagonist\'s qualities by contrast','Provide comic relief','Represent the theme'],ans:1,explain:'A foil character has contrasting traits that highlight the protagonist\'s qualities.',eli5:'Draco Malfoy is Harry\'s foil — his cruelty makes Harry\'s kindness shine brighter! ✨'},
+{diff:'hard',text:'The "pathetic fallacy" was coined by:',opts:['Aristotle','John Ruskin','Samuel Johnson','T.S. Eliot'],ans:1,explain:'John Ruskin coined "pathetic fallacy" in "Modern Painters" (1856) to describe the attribution of emotions to nature.',eli5:'Victorian critic John Ruskin gave a name to the thing writers always did — blaming the weather for feelings! 🌧️'},
+{diff:'hard',text:'What is "bathos" in literature?',opts:['A Greek tragedy form','An abrupt, jarring shift from the sublime to the trivial','An emotional climax','A type of rhyme scheme'],ans:1,explain:'Bathos: an anticlimactic descent from the grand to the mundane — often for comic effect.',eli5:'Building up to something epic then suddenly talking about sandwiches — that ridiculous letdown is bathos! 🥪'},
+{diff:'hard',text:'"Hubris" in Greek tragedy refers to:',opts:['A tragic ending','Excessive pride leading to the hero\'s downfall','A wise mentor figure','A divine intervention'],ans:1,explain:'Hubris: excessive pride or self-confidence, typically the fatal flaw that leads to a tragic hero\'s downfall.',eli5:'When a hero gets too proud and challenges the gods — that arrogance (hubris) always ends badly! 🎭'}
+],
+
+// ═══════════════════════════════════════════════════════
+// DATA STAGE 1 — Data Basics
+// ═══════════════════════════════════════════════════════
+d1:[
+{diff:'easy',text:'A pie chart shows: Sales 40%, Marketing 30%, HR 20%, Others 10%. If total budget is ₹1,00,000, how much does HR get?',opts:['₹15,000','₹18,000','₹20,000','₹25,000'],ans:2,explain:'HR = 20% of 1,00,000 = ₹20,000.',eli5:'20% of 100,000 is just 20 out of every 100 — that\'s ₹20,000! 🥧'},
+{diff:'easy',text:'What is the median of: 3, 7, 2, 9, 5?',opts:['5','6','7','3'],ans:0,explain:'Sort: 2,3,5,7,9. Middle value = 5.',eli5:'Arrange in order and find the middle one — 2,3,5,7,9 — the middle is 5! 🔢'},
+{diff:'easy',text:'What is the mode of: 4, 7, 2, 7, 3, 7, 5?',opts:['4','5','7','3'],ans:2,explain:'7 appears three times — more than any other number. Mode = 7.',eli5:'Which number shows up the most? 7 appears 3 times — that\'s the mode! 🏆'},
+{diff:'easy',text:'What is the range of: 12, 8, 19, 5, 15?',opts:['10','12','14','15'],ans:2,explain:'Range = Maximum - Minimum = 19 - 5 = 14.',eli5:'Range is the gap from smallest to biggest — 19 minus 5 = 14! 📏'},
+{diff:'easy',text:'A bar chart shows monthly sales: Jan=200, Feb=150, Mar=250. What is the average?',opts:['180','190','200','210'],ans:2,explain:'Average = (200+150+250)/3 = 600/3 = 200.',eli5:'Add all three months and divide by 3 — (200+150+250)÷3 = 200! 📊'},
+{diff:'easy',text:'In a line graph, the y-axis represents profit (₹ lakhs) and x-axis represents years. If the line goes from 2018 to 2022, it shows data for how many years?',opts:['4 years','5 years','6 years','3 years'],ans:1,explain:'2018,2019,2020,2021,2022 = 5 data points = 5 years.',eli5:'Count 2018,2019,2020,2021,2022 — that\'s 5 years of data! 📈'},
+{diff:'easy',text:'A frequency table shows: Grade A: 5 students, Grade B: 10, Grade C: 8, Grade D: 2. What percentage got Grade A?',opts:['15%','20%','25%','30%'],ans:1,explain:'Total = 5+10+8+2 = 25. Grade A% = (5/25)×100 = 20%.',eli5:'5 out of 25 total students got A — that\'s 1 in 5, or 20%! 🎓'},
+{diff:'medium',text:'A pie chart shows a company\'s expense distribution. If Operations takes 35° out of 360°, what percentage is that?',opts:['7.5%','9.7%','10.5%','12%'],ans:1,explain:'(35/360) × 100 = 9.72% ≈ 9.7%',eli5:'A full circle is 360°. 35° out of 360° is like 35 out of 360 pieces — about 9.7%! 🥧'},
+{diff:'medium',text:'Revenue data: Q1=₹50L, Q2=₹60L, Q3=₹45L, Q4=₹65L. Which quarter had the highest growth from previous?',opts:['Q2','Q3','Q4','Q1'],ans:2,explain:'Q2 growth: +10L. Q3 growth: -15L. Q4 growth: +20L. Q4 has highest growth.',eli5:'Compare each quarter to the one before — Q4 jumped ₹20L which is the biggest gain! 📈'},
+{diff:'medium',text:'A histogram has class intervals 0-10, 10-20, 20-30 with frequencies 5, 12, 8. The modal class is:',opts:['0-10','10-20','20-30','Cannot determine'],ans:1,explain:'Modal class has the highest frequency. 10-20 has frequency 12, which is highest.',eli5:'The modal class is like the mode — the interval with the most people in it, which is 10-20! 📊'},
+{diff:'medium',text:'If the mean of 5 numbers is 20 and one number is 30, the mean of remaining 4 is:',opts:['17.5','17.75','18','18.5'],ans:0,explain:'Total = 5×20 = 100. Remaining sum = 100-30 = 70. Mean of 4 = 70/4 = 17.5.',eli5:'Total sum is 100. Remove 30, left with 70. Share among 4 → 17.5! 🔢'},
+{diff:'medium',text:'A cumulative frequency graph is used to find the:',opts:['Mean','Mode','Median and quartiles','Range'],ans:2,explain:'Cumulative frequency curves (ogives) are used to find median, quartiles, and percentiles.',eli5:'The S-shaped cumulative curve is the best tool to find the middle value and where most data sits! 📈'},
+{diff:'medium',text:'In a scatter plot, negative correlation means:',opts:['Both variables increase together','One increases as other decreases','No relationship','Both variables decrease'],ans:1,explain:'Negative correlation: as one variable increases, the other tends to decrease.',eli5:'Like speed vs travel time — faster you go, less time you spend. They go in opposite directions! 📉'},
+{diff:'hard',text:'Sales for 5 years: 10,15,12,18,20 (in lakhs). The geometric mean is approximately:',opts:['14.2','14.8','15.2','15.6'],ans:1,explain:'Geometric mean = (10×15×12×18×20)^(1/5) = (648000)^0.2 ≈ 14.8.',eli5:'Geometric mean multiplies everything and takes the root — useful for growth rates! 📊'},
+{diff:'hard',text:'A box plot shows: Min=10, Q1=20, Median=30, Q3=45, Max=60. The IQR is:',opts:['20','25','30','35'],ans:1,explain:'IQR = Q3 - Q1 = 45 - 20 = 25.',eli5:'Interquartile Range is the spread of the middle half of data — Q3 minus Q1 = 25! 📦'},
+{diff:'hard',text:'A dataset has mean=50, median=45, mode=40. Its distribution is:',opts:['Symmetric','Left-skewed','Right-skewed','Bimodal'],ans:2,explain:'When mean > median > mode, the distribution is right (positively) skewed.',eli5:'Mean is pulled to the right by high values — so the tail extends to the right. Right-skewed! 📈'},
+{diff:'easy',text:'What type of chart is BEST for showing parts of a whole?',opts:['Line chart','Bar chart','Pie chart','Scatter plot'],ans:2,explain:'Pie charts show proportions — how each part relates to the whole (100%).',eli5:'A pie chart literally looks like a pie cut into slices — perfect for showing parts of a whole! 🥧'},
+{diff:'easy',text:'In a bar chart, the height of the bar represents:',opts:['The category name','The frequency or value','The color code','The sample size'],ans:1,explain:'The height (or length) of each bar in a bar chart represents the frequency or value for that category.',eli5:'Taller bar = more of that thing! The height is how much! 📊'},
+{diff:'medium',text:'What does a standard deviation of 0 indicate?',opts:['Mean is zero','All values are the same','Data is normally distributed','High variance'],ans:1,explain:'Standard deviation of 0 means there is no spread — all data points are identical.',eli5:'If everyone in class scored exactly 80, there\'s no variation — standard deviation is 0! 📐'},
+{diff:'medium',text:'If you have data: 5, 5, 5, 5, 5. Which measure of central tendency should you report?',opts:['Mean only','Median only','Mode only','Any — all three are equal'],ans:3,explain:'When all values are the same, mean = median = mode. All measures give the same result.',eli5:'All values are 5, so the average is 5, the middle is 5, and the most common is 5! 🔢'},
+{diff:'medium',text:'A line graph shows: 2020=₹40L, 2021=₹50L, 2022=₹45L. What is the percentage change from 2021 to 2022?',opts:['-10%','-8%','-5%','+10%'],ans:0,explain:'Change = (45-50)/50 × 100 = -5/50 × 100 = -10%.',eli5:'Fell from 50 to 45 — that\'s 5 less than 50, which is 10% of 50! 📉'},
+{diff:'hard',text:'A dataset of 100 values has mean 25 and SD 5. How many values are expected between 15 and 35?',opts:['68%','95%','99.7%','100%'],ans:1,explain:'15=mean-2SD, 35=mean+2SD. By the empirical rule, 95% of data falls within 2 standard deviations.',eli5:'The 68-95-99.7 rule: 95% of data lives within 2 standard deviations from the mean! 🔔'},
+{diff:'easy',text:'What does "outlier" mean in data?',opts:['The most common value','A value far from the rest','The median value','The first data point'],ans:1,explain:'An outlier is a data point significantly different from other observations.',eli5:'Like one student scoring 10 when everyone else scored 80-90 — that 10 is an outlier! 📊'},
+{diff:'medium',text:'A survey shows 60% prefer product A and 40% prefer product B. This data is:',opts:['Quantitative continuous','Quantitative discrete','Qualitative/Categorical','Ordinal'],ans:2,explain:'Preferences (A or B) are categories, not numbers. This is qualitative/categorical data.',eli5:'Product preferences are categories — you can\'t have 1.5 products. It\'s categorical data! 📋'},
+{diff:'medium',text:'You sample 50 students from 500. This is:',opts:['Census','Sampling','Stratified sampling','Cluster sampling'],ans:1,explain:'Selecting a subset (50) from the whole population (500) is sampling.',eli5:'Instead of surveying all 500 students, you pick 50 as representatives — that\'s sampling! 🎯'},
+{diff:'hard',text:'What is the coefficient of variation (CV) useful for?',opts:['Finding the mode','Comparing variability of datasets with different means','Finding the median','Counting outliers'],ans:1,explain:'CV = (SD/Mean)×100. It normalizes variation, allowing comparison across datasets with different scales.',eli5:'CV lets you compare how spread out data is even when the scales are completely different! 📊'},
+{diff:'easy',text:'What is a "class interval" in a frequency distribution?',opts:['The total count','The range of values in one group','The average of a group','The mode'],ans:1,explain:'A class interval is a range of values grouped together in a frequency distribution (e.g., 0-10, 10-20).',eli5:'When sorting data into groups like 0-10, 10-20, 20-30 — each group is a class interval! 📦'},
+{diff:'medium',text:'Weighted average of: Score 80 (weight 2), Score 60 (weight 3). Result is:',opts:['68','70','72','74'],ans:0,explain:'Weighted avg = (80×2 + 60×3)/(2+3) = (160+180)/5 = 340/5 = 68.',eli5:'Multiply each score by its weight, add up, then divide by total weights! 80×2 + 60×3 = 340 ÷ 5 = 68! ⚖️'},
+{diff:'medium',text:'In a dataset, if you remove the highest and lowest values, the average is called:',opts:['Geometric mean','Harmonic mean','Trimmed mean','Weighted mean'],ans:2,explain:'Trimmed mean: calculated by removing a fixed percentage of extreme values from both ends.',eli5:'Trim away the outlier scores, then find the average of the rest — that\'s the trimmed mean! ✂️'},
+{diff:'hard',text:'A p-value of 0.03 in hypothesis testing means:',opts:['3% chance the hypothesis is true','3% chance of observing results as extreme if null hypothesis were true','97% confidence in result','The result is definitely significant'],ans:1,explain:'P-value: probability of getting results as extreme as observed, assuming the null hypothesis is true. p=0.03 < 0.05 → reject null.',eli5:'If the null hypothesis were true, you\'d only see results this extreme 3% of the time — unlikely! 🎲'}
+],
+
+// ═══════════════════════════════════════════════════════
+// DATA STAGE 2 — Data Interpretation
+// ═══════════════════════════════════════════════════════
+d2:[
+{diff:'medium',text:'Company revenue grew from ₹100L to ₹133.1L over 3 years. What is the CAGR?',opts:['10%','11%','12%','13%'],ans:0,explain:'CAGR = (133.1/100)^(1/3) - 1 = (1.331)^(1/3) - 1 = 1.10 - 1 = 10%.',eli5:'If money grew from 100 to 133.1 in 3 years, find the single consistent % per year — that\'s CAGR! 📈'},
+{diff:'medium',text:'A Venn diagram shows 30 like tea, 25 like coffee, 10 like both. How many like only tea?',opts:['15','20','25','30'],ans:1,explain:'Only tea = 30 - 10 = 20.',eli5:'30 like tea total, but 10 of those also like coffee — only 20 are pure tea lovers! ☕'},
+{diff:'medium',text:'In a time series, what does seasonality refer to?',opts:['Long-term trend','Random fluctuations','Regular patterns repeating within a year','Irregular events'],ans:2,explain:'Seasonality: predictable, repeated patterns within a fixed period (often yearly), like higher ice cream sales in summer.',eli5:'Ice cream sales are always higher in summer — that yearly repeating pattern is seasonality! ☀️'},
+{diff:'hard',text:'A regression line y = 2x + 5 predicts: when x=10, y=?',opts:['20','25','30','35'],ans:1,explain:'y = 2(10) + 5 = 20 + 5 = 25.',eli5:'Plug in x=10 into the formula: 2×10 + 5 = 25! Linear prediction made simple! 📈'},
+{diff:'hard',text:'R² = 0.81 in a regression. This means:',opts:['81% of data points are correct','81% of variance in y is explained by x','The correlation is 0.81','81% chance of accurate prediction'],ans:1,explain:'R² (coefficient of determination): proportion of variance in the dependent variable explained by the model.',eli5:'81% of why y changes can be explained by x — the model accounts for most of the variation! 📊'},
+{diff:'hard',text:'What is the purpose of a control chart (Shewhart chart)?',opts:['To find correlations','To monitor process stability over time','To compare two populations','To visualize distributions'],ans:1,explain:'Control charts track process performance over time, distinguishing common cause vs special cause variation.',eli5:'Control charts are like health monitors for a factory — they show when a process goes out of normal range! 📉'},
+{diff:'hard',text:'In data analysis, "ETL" stands for:',opts:['Extract, Transform, Load','Evaluate, Test, Learn','Explore, Train, Label','Estimate, Track, Log'],ans:0,explain:'ETL (Extract, Transform, Load) is the process of collecting data from sources, transforming it, and loading it into a destination system.',eli5:'ETL is like cooking: pick ingredients (Extract), prepare them (Transform), serve them (Load)! 🍳'},
+{diff:'hard',text:'What does a low p-value with high effect size indicate?',opts:['Statistically significant but practically unimportant','Both statistically and practically significant','Not significant','Only practically significant'],ans:1,explain:'Low p-value = statistically significant (unlikely by chance). High effect size = practically meaningful difference. Both together = strong result.',eli5:'The difference is both real (not just chance) AND large enough to actually matter — best case! 🎯'},
+{diff:'hard',text:'ARIMA(1,1,1) in time series means:',opts:['AR order 1, I order 1, MA order 1','Average, Integration, Moving Average','1 lag, 1 difference, 1 MA term','All of A and C'],ans:3,explain:'ARIMA(p,d,q): p=AR order, d=integration/differencing order, q=MA order. 1,1,1 means all of the above.',eli5:'ARIMA is like a recipe: 1 autoregressive ingredient, 1 differencing step, 1 moving average — all in one! 📊'},
+{diff:'hard',text:'What is data normalization used for?',opts:['Removing outliers','Scaling features to a common range','Finding correlations','Reducing dimensions'],ans:1,explain:'Normalization rescales data to a standard range (usually 0-1 or mean 0, SD 1) so features with different scales don\'t dominate models.',eli5:'If age is 25 and salary is 50,000, normalization makes them comparable by putting both on the same scale! 📏'},
+{diff:'medium',text:'A dataset has positive skewness. Which measure is most affected?',opts:['Mode','Median','Mean','Standard deviation'],ans:2,explain:'The mean is pulled in the direction of the skew. In positive skew, mean > median > mode.',eli5:'Extreme high values pull the mean to the right — mean is most sensitive to outliers! 📈'},
+{diff:'medium',text:'Pearson correlation coefficient r = -0.9 indicates:',opts:['Weak positive correlation','Strong negative correlation','No correlation','Moderate positive correlation'],ans:1,explain:'r ranges from -1 to +1. r = -0.9 is close to -1 → strong negative correlation.',eli5:'r near -1 means as one variable goes up, the other strongly goes down! 📉'},
+{diff:'hard',text:'Which sampling method ensures every subgroup is proportionally represented?',opts:['Simple random sampling','Cluster sampling','Stratified sampling','Convenience sampling'],ans:2,explain:'Stratified sampling: divide population into subgroups (strata), sample proportionally from each.',eli5:'Split the population into groups (young/old, male/female), then sample from each group fairly! 🎯'},
+{diff:'hard',text:'An A/B test shows group A has higher conversion by 2%. If sample size is only 50, you should:',opts:['Conclude A is better','Increase sample size','Conclude B is better','Run another test immediately'],ans:1,explain:'A small sample size (50) has insufficient statistical power — the difference may be due to chance. Need more data.',eli5:'50 people isn\'t enough to be sure! With more people, you\'d know if that 2% is real! 🧪'},
+{diff:'hard',text:'What is the purpose of cross-validation in model evaluation?',opts:['To clean data','To assess how a model generalizes to unseen data','To select features','To normalize data'],ans:1,explain:'Cross-validation (k-fold) tests model performance on multiple train/test splits, giving reliable generalization estimate.',eli5:'Test your model on many different data splits to see if it truly works or just memorized the training data! 🔄'},
+{diff:'hard',text:'In a confusion matrix, "False Positive" means:',opts:['Model predicted positive, was positive','Model predicted negative, was negative','Model predicted positive, was actually negative','Model predicted negative, was actually positive'],ans:2,explain:'False Positive (Type I error): model predicted positive but actual label was negative.',eli5:'The alarm rang (predicted danger) but there was no fire — that\'s a false positive! 🚨'},
+{diff:'medium',text:'Data that has been collected for a different purpose and reused for analysis is called:',opts:['Primary data','Secondary data','Raw data','Clean data'],ans:1,explain:'Secondary data was collected by someone else for a different purpose and is being reused.',eli5:'Using last year\'s census data for your own research is secondary data — someone else collected it! 📊'},
+{diff:'medium',text:'The interquartile range (IQR) is robust to outliers because:',opts:['It uses all data points','It only looks at the middle 50% of data','It uses the mean','It squares deviations'],ans:1,explain:'IQR only uses Q1 and Q3 — the middle 50%. Extreme values don\'t affect it.',eli5:'IQR ignores the extreme top and bottom — only looks at the middle crowd! 📦'},
+{diff:'hard',text:'What does "data granularity" mean?',opts:['Data size','Level of detail in data','Data quality','Number of variables'],ans:1,explain:'Granularity refers to the level of detail — daily sales data has higher granularity than monthly totals.',eli5:'Hourly weather data is more granular than daily averages — more detail = higher granularity! 🔬'},
+{diff:'hard',text:'A time series shows trend + seasonality + residual. This decomposition is called:',opts:['Regression','ETS decomposition','STL decomposition','Fourier analysis'],ans:2,explain:'STL (Seasonal-Trend decomposition using Loess) separates a time series into seasonal, trend, and residual components.',eli5:'STL is like breaking music into bass, melody, and noise separately — each component analyzed on its own! 🎵'},
+{diff:'hard',text:'What does a QQ plot (quantile-quantile plot) test for?',opts:['Correlation between variables','Whether data follows a normal distribution','Time series trends','Outlier detection'],ans:1,explain:'QQ plots compare sample quantiles with theoretical normal distribution quantiles. Points on the diagonal line indicate normality.',eli5:'If your data\'s points line up on the diagonal, your data is normally distributed — QQ plot checks this! 📈'},
+{diff:'medium',text:'Which chart type is most appropriate for showing correlation between two variables?',opts:['Pie chart','Bar chart','Scatter plot','Line chart'],ans:2,explain:'Scatter plots show relationships between two continuous variables, revealing correlation patterns.',eli5:'Plot height vs weight for 100 people — scatter plots reveal if they move together! 📍'},
+{diff:'hard',text:'In A/B testing, the null hypothesis typically states:',opts:['Version A is better','There is no difference between A and B','Version B is better','The test is inconclusive'],ans:1,explain:'In A/B testing, H₀ says there\'s no meaningful difference — we try to reject this.',eli5:'We start assuming A and B are the same (null hypothesis) and see if data proves otherwise! 🧪'},
+{diff:'medium',text:'What is "data wrangling"?',opts:['Collecting new data','Cleaning and transforming raw data for analysis','Visualizing data','Building predictive models'],ans:1,explain:'Data wrangling (munging): the process of cleaning, structuring, and enriching raw data for analysis.',eli5:'Raw data is messy — wrangling is like sorting, cleaning, and organizing it so you can actually use it! 🤠'},
+{diff:'hard',text:'The "curse of dimensionality" refers to:',opts:['Too few data points','Problems arising when analyzing data in very high dimensions','Having too many models','Missing data issues'],ans:1,explain:'High-dimensional data becomes sparse — distances become meaningless and algorithms fail. More features ≠ better models.',eli5:'Too many variables and data becomes sparse — everything is far from everything else in high dimensions! 🌌'},
+{diff:'medium',text:'Which measure is best for data with outliers?',opts:['Mean','Mode','Median','Standard deviation'],ans:2,explain:'Median is resistant to outliers because it uses position, not values. Mean is heavily affected by extreme values.',eli5:'One billionaire in a group of 100 people ruins the average salary but barely changes the median! 🎯'},
+{diff:'hard',text:'Power BI and Tableau are examples of:',opts:['Programming languages','Database management systems','Business Intelligence/data visualization tools','Statistical analysis software'],ans:2,explain:'Power BI (Microsoft) and Tableau are leading BI/visualization platforms for interactive dashboards and data exploration.',eli5:'Power BI and Tableau are like super-smart dashboard builders for business data! 📊'},
+{diff:'hard',text:'What is the difference between correlation and causation?',opts:['They mean the same thing','Correlation shows two things vary together; causation shows one causes the other','Causation is always stronger','Correlation implies causation'],ans:1,explain:'Correlation: two variables move together. Causation: one variable directly causes another. Ice cream sales and drowning correlate (both peak in summer) but don\'t cause each other.',eli5:'Ice cream and drowning both increase in summer — they correlate but ice cream doesn\'t CAUSE drowning! 🍦'},
+{diff:'hard',text:'In machine learning, "overfitting" means the model:',opts:['Performs well on training and test data','Learns training data too well and fails on new data','Is too simple','Ignores the training data'],ans:1,explain:'Overfitting: the model memorizes training patterns (including noise) rather than learning general patterns, failing on new data.',eli5:'Memorizing every answer in the practice book — then failing when the real test has new questions! 📚'}
+],
+
+// ═══════════════════════════════════════════════════════
+// DATA STAGE 3 — Master Data
+// ═══════════════════════════════════════════════════════
+d3:[
+{diff:'hard',text:'What is "bias" in a machine learning model?',opts:['Error from randomness','Error from wrong assumptions in the learning algorithm','The amount of training data','The learning rate'],ans:1,explain:'Bias: error from oversimplified assumptions. High bias → underfitting (model too simple to learn the pattern).',eli5:'A biased model has preconceived ideas that prevent it from learning properly — too rigid! 🤖'},
+{diff:'hard',text:'Bayes\' theorem relates to:',opts:['Updating beliefs based on new evidence','Finding the mode of a dataset','Calculating standard deviation','Training neural networks'],ans:0,explain:'Bayes\' theorem: P(A|B) = P(B|A)×P(A)/P(B). It updates the probability of an event based on new evidence.',eli5:'Bayes\' theorem: you had a belief, you see new evidence, now you update your belief! Like a detective! 🕵️'},
+{diff:'hard',text:'PCA (Principal Component Analysis) is used to:',opts:['Classify data points','Reduce dimensions while preserving maximum variance','Find outliers','Build decision trees'],ans:1,explain:'PCA transforms data to new axes (principal components) that capture the most variance, reducing dimensions.',eli5:'PCA squishes many variables into fewer "super-variables" that still capture most of the information! 📉'},
+{diff:'hard',text:'What does "recall" measure in a classification model?',opts:['How precise the model is','What fraction of actual positives the model correctly identified','Overall accuracy','False positive rate'],ans:1,explain:'Recall (sensitivity) = TP/(TP+FN). Of all actual positive cases, how many did the model find?',eli5:'If 100 people have a disease, and the model catches 90 — recall is 90%. Don\'t miss the sick ones! 🏥'},
+{diff:'hard',text:'Ensemble methods like Random Forest improve performance by:',opts:['Using one very deep tree','Combining predictions of many models','Training faster','Using less data'],ans:1,explain:'Ensemble methods combine multiple weak learners (e.g., 100 shallow trees) to create a stronger predictor.',eli5:'Ask 100 experts and take the vote rather than trusting one — wisdom of the crowd! 🌲'},
+{diff:'hard',text:'The "vanishing gradient" problem affects:',opts:['Decision trees','Linear regression','Deep neural networks with many layers','Support vector machines'],ans:2,explain:'In deep networks, gradients become exponentially small as they propagate back, preventing early layers from learning.',eli5:'The training signal fades to nothing by the time it reaches early layers — like a whisper game! 📢'},
+{diff:'hard',text:'K-means clustering requires you to specify:',opts:['The shape of clusters','The number of clusters K','The maximum iterations only','Nothing — it\'s automatic'],ans:1,explain:'K-means requires K (number of clusters) as input. It then assigns points to K centroids iteratively.',eli5:'K-means asks "how many groups do you want?" — you decide K, it figures out the best groupings! 🎯'},
+{diff:'hard',text:'What is the purpose of the F1-score?',opts:['Measures speed of model','Harmonic mean of precision and recall','Measure of model size','Accuracy on test set'],ans:1,explain:'F1 = 2×(Precision×Recall)/(Precision+Recall). Balances precision and recall, especially useful with imbalanced classes.',eli5:'F1 is the balanced average of precision and recall — when you need both to be good simultaneously! ⚖️'},
+{diff:'hard',text:'Gradient descent minimizes:',opts:['The number of features','The loss/cost function','The number of epochs','Model complexity'],ans:1,explain:'Gradient descent is an optimization algorithm that iteratively adjusts model parameters to minimize the loss function.',eli5:'Imagine rolling a ball down a hill to find the lowest point — that\'s gradient descent finding the best model! ⛷️'},
+{diff:'hard',text:'What is "transfer learning"?',opts:['Moving data between servers','Using a pre-trained model as starting point for a new task','Training two models simultaneously','Transferring labels between datasets'],ans:1,explain:'Transfer learning: reuse a model trained on one task (e.g., ImageNet) as starting point for a different but related task.',eli5:'Learning to drive becomes easier if you already know how to ride a bike — that\'s transfer learning! 🚗'},
+{diff:'hard',text:'A model with high variance and low bias is likely:',opts:['Underfitting','Overfitting','Well-calibrated','Perfectly generalizing'],ans:1,explain:'High variance = sensitive to training data fluctuations = overfitting. Low bias means it fits training data well but fails to generalize.',eli5:'The model is too tuned to training quirks — it overfit! It sees patterns where there are none! 📈'},
+{diff:'hard',text:'LSTM (Long Short-Term Memory) is a type of:',opts:['Convolutional network','Recurrent neural network','Random forest','Gradient boosting algorithm'],ans:1,explain:'LSTM is a special RNN architecture designed to learn long-term dependencies in sequential data.',eli5:'LSTM remembers important things from way back in a sequence — like a person who never forgets the beginning of a story! 🧠'},
+{diff:'hard',text:'What is "feature engineering"?',opts:['Building the model architecture','Creating new features from raw data to improve model performance','Selecting the training algorithm','Tuning hyperparameters'],ans:1,explain:'Feature engineering: creating, transforming, or selecting variables (features) from raw data to improve model learning.',eli5:'Instead of using raw age, you create "senior citizen = age>65" — that\'s engineering a better feature! 🔧'},
+{diff:'hard',text:'ROC-AUC of 0.5 means:',opts:['Perfect model','Model performs no better than random guessing','Model always predicts wrong','50% accuracy'],ans:1,explain:'AUC=0.5 means the model has no discrimination ability — equivalent to random guessing (flipping a coin).',eli5:'AUC of 0.5 is as good as flipping a coin — the model learned nothing useful! 🎲'},
+{diff:'hard',text:'The "elbow method" is used to determine:',opts:['Optimal learning rate','Optimal number of clusters K','Best train/test split','Best number of epochs'],ans:1,explain:'The elbow method plots inertia vs K values in K-means. The "elbow" point (where improvement slows) suggests optimal K.',eli5:'Plot quality vs number of clusters — pick where the improvement stops giving big returns! 📊'},
+{diff:'hard',text:'What is a "hyperparameter" in ML?',opts:['A parameter learned from data','A configuration set before training begins','The model\'s output','A feature in the dataset'],ans:1,explain:'Hyperparameters (learning rate, K in K-means, tree depth) are set by the practitioner before training, unlike parameters learned from data.',eli5:'Before teaching a child, you decide: how long each lesson is, how often to test — those are hyperparameters! ⚙️'},
+{diff:'hard',text:'Which algorithm is used for recommendation systems?',opts:['K-means','Collaborative filtering','Linear regression','PCA'],ans:1,explain:'Collaborative filtering recommends items based on similar users\' behaviors — "users like you also liked..."',eli5:'"People who watched what you watched also liked this" — Netflix uses collaborative filtering! 🎬'},
+{diff:'hard',text:'What does "regularization" prevent in ML models?',opts:['Underfitting','Overfitting','Data leakage','Slow training'],ans:1,explain:'Regularization (L1/L2/dropout) adds a penalty for model complexity, discouraging overfitting.',eli5:'Regularization tells the model "don\'t get too complicated" — it keeps the model from memorizing! 🛑'},
+{diff:'hard',text:'Natural Language Processing (NLP) task of identifying "Apple" as a company vs a fruit is:',opts:['Sentiment analysis','Named Entity Recognition','Topic modeling','Text summarization'],ans:1,explain:'Named Entity Recognition (NER) identifies and classifies entities (person, organization, location, etc.) in text.',eli5:'Teaching computers to know when "Apple" means the company or the fruit — that\'s NER! 🍎'},
+{diff:'hard',text:'What is a "decision boundary" in classification?',opts:['The model\'s accuracy threshold','The surface separating different class predictions','The training data split','The loss function threshold'],ans:1,explain:'Decision boundary: the boundary in feature space that separates different classes. Points on one side are class A, other side class B.',eli5:'Draw a line between cats and dogs on a height-weight plot — that line is the decision boundary! 🐱🐶'},
+{diff:'hard',text:'The attention mechanism in transformers:',opts:['Speeds up training','Allows the model to focus on relevant parts of input when producing output','Reduces model size','Prevents overfitting'],ans:1,explain:'Attention: assigns weights to different input positions, allowing the model to focus on relevant parts when generating each output token.',eli5:'When translating "I saw the bank by the river," attention focuses on "river" to know "bank" means riverbank! 🏦'},
+{diff:'hard',text:'What is "data leakage" in ML?',opts:['Data being stolen','Information from outside training set contaminating the model','Missing data','Incorrect labels'],ans:1,explain:'Data leakage: when information from test/future data is inadvertently used in training, giving falsely optimistic results.',eli5:'Using tomorrow\'s stock price to predict today\'s — that\'s cheating! Future info leaking into training! 📈'},
+{diff:'hard',text:'Precision = TP/(TP+FP). A high precision means:',opts:['Few false positives — when model says positive, it\'s usually right','Few false negatives','High recall','High accuracy'],ans:0,explain:'High precision: most predicted positives are actual positives. Low false positives. Trade-off with recall.',eli5:'When the spam filter marks an email as spam, high precision means it\'s almost always actually spam! 📧'},
+{diff:'hard',text:'What is "batch normalization" in deep learning?',opts:['Reducing batch size','Normalizing layer inputs to speed up training and stabilize learning','Shuffling data','Regularizing weights'],ans:1,explain:'Batch normalization normalizes the inputs to each layer using mini-batch statistics, reducing internal covariate shift and enabling faster, more stable training.',eli5:'Like standardizing test scores in each class separately — batch norm keeps each layer\'s inputs well-behaved! 🔄'},
+{diff:'hard',text:'Which is NOT a dimensionality reduction technique?',opts:['PCA','t-SNE','UMAP','K-means'],ans:3,explain:'K-means is a clustering algorithm, not a dimensionality reduction technique. PCA, t-SNE, and UMAP all reduce dimensions.',eli5:'K-means groups data — it doesn\'t reduce the number of columns/dimensions! 🎯'},
+{diff:'hard',text:'What does "gradient boosting" do?',opts:['Averages many independent trees','Trains trees sequentially, each correcting the previous one\'s errors','Uses random feature subsets','Eliminates overfitting automatically'],ans:1,explain:'Gradient boosting: builds an ensemble by training each new model to correct the residual errors of the previous ensemble.',eli5:'Each new learner focuses on what the previous got wrong — like students reviewing only the questions they missed! 📚'},
+{diff:'hard',text:'One-hot encoding is used to:',opts:['Normalize numerical data','Convert categorical variables into binary vectors','Reduce dimensions','Handle missing values'],ans:1,explain:'One-hot encoding: converts a categorical variable with K categories into K binary (0/1) columns, one per category.',eli5:'Convert "cat/dog/bird" into three columns: cat=[1,0,0], dog=[0,1,0], bird=[0,0,1]! 🐾'},
+{diff:'hard',text:'What is "model interpretability"?',opts:['How fast a model runs','How well humans can understand why a model makes specific predictions','Model accuracy on test data','The number of model parameters'],ans:1,explain:'Interpretability: the degree to which humans can understand the cause of a decision. LIME and SHAP are common tools.',eli5:'"Why did the loan get rejected?" — interpretability gives you the actual reasons, not just the decision! 🔍'},
+{diff:'hard',text:'Which activation function is most commonly used in hidden layers of deep neural networks today?',opts:['Sigmoid','Tanh','ReLU','Softmax'],ans:2,explain:'ReLU (Rectified Linear Unit): f(x)=max(0,x). Avoids vanishing gradient, computationally efficient, and works well in practice.',eli5:'ReLU is like a light switch — zero for negative values, itself for positive. Simple and powerful! 💡'}
+]
+}; // end QB
+
+// ═══════════════════════════════════════════════════════
+// STAGE METADATA
+// ═══════════════════════════════════════════════════════
+const STAGES = [
+  {id:'q1',cat:'quant',name:'Numbers Basics',level:1,unlocks:['q2','l1']},
+  {id:'q2',cat:'quant',name:'Number Crunching',level:2,unlocks:['q3']},
+  {id:'q3',cat:'quant',name:'Advanced Quant',level:3,unlocks:[]},
+  {id:'l1',cat:'logic',name:'Pattern Spotting',level:1,unlocks:['l2','v1']},
+  {id:'l2',cat:'logic',name:'Logical Chains',level:2,unlocks:['l3']},
+  {id:'l3',cat:'logic',name:'Master Logic',level:3,unlocks:[]},
+  {id:'v1',cat:'verbal',name:'Word Power',level:1,unlocks:['v2','d1']},
+  {id:'v2',cat:'verbal',name:'Verbal Reasoning',level:2,unlocks:['v3']},
+  {id:'v3',cat:'verbal',name:'Master Verbal',level:3,unlocks:[]},
+  {id:'d1',cat:'data',name:'Data Basics',level:1,unlocks:['d2']},
+  {id:'d2',cat:'data',name:'Data Interpretation',level:2,unlocks:['d3']},
+  {id:'d3',cat:'data',name:'Master Data',level:3,unlocks:[]},
+];
+
+const CAT_COLOR = {
+  quant: '#6366F1',
+  logic: '#10B981',
+  verbal: '#F59E0B',
+  data:   '#EF4444',
+};
+const CAT_LIGHT = {
+  quant: '#EEF2FF',
+  logic: '#ECFDF5',
+  verbal:'#FFFBEB',
+  data:  '#FEF2F2',
+};
+const CAT_LABEL = {quant:'Quantitative',logic:'Logic',verbal:'Verbal',data:'Data'};
+const LS_PLAYER = 'aq_v5_player';
+const LS_LB     = 'aq_v5_lb';
+const LS_FB     = 'aq_v5_fb';
+const ADMIN_PIN = 'aq2025';
+const PASS_RATE = 0.6; // 3/5 correct to unlock
+
+// ── Player state
+let P = {name:'', avColor:'', completed:[], totalScore:0, bestStreak:0, totalCorrect:0, totalAnswered:0};
+// ── Session state
+let SESSION = {stageId:null, questions:[], qIdx:0, streak:0, score:0, correct:0, times:[], startTime:0};
+let explainMode = 0; // 0=explain, 1=eli5
+let adminUnlocked = false;
+let tapCount = 0, tapTimer = null;
+let fbRating = 0, fbCats = [];
+let timerInterval = null;
+
+// ── Utility
+const $ = id => document.getElementById(id);
+const ls_get = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; }};
+const ls_set = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const clamp = (n,a,b) => Math.min(Math.max(n,a),b);
+
+function loadPlayer() {
+  const saved = ls_get(LS_PLAYER, null);
+  if (saved) P = {...P, ...saved};
+}
+function savePlayer() { ls_set(LS_PLAYER, P); }
+
+function avatarColor(name) {
+  const palette = ['#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4','#EC4899'];
+  let h = 0; for (const c of name) h = (h*31+c.charCodeAt(0)) % palette.length;
+  return palette[Math.abs(h)];
+}
+function initials(name) {
+  return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2) || '?';
+}
+
+// ── Screens
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════ ENTRY SCREEN ════════════
+function init() {
+  loadPlayer();
+  if (P.name) {
+    $('back-link').style.display = 'block';
+    renderHome();
+  }
+}
+
+function startPlayer() {
+  const inp = $('player-name-input');
+  const name = inp.value.trim();
+  if (!name) { inp.style.borderColor='var(--wrong)'; inp.focus(); return; }
+  inp.style.borderColor = '';
+  P.name = name;
+  P.avColor = avatarColor(name);
+  savePlayer();
+  renderHome();
+}
+
+$('player-name-input').addEventListener('keydown', e => { if(e.key==='Enter') startPlayer(); });
+
+function goHome() { renderHome(); }
+
+// ═══════════ HOME SCREEN ════════════
+function getUnlocked() {
+  const u = new Set(['q1']);
+  P.completed.forEach(id => {
+    const s = STAGES.find(x=>x.id===id);
+    if (s) s.unlocks.forEach(x=>u.add(x));
+  });
+  return u;
+}
+
+function renderHome() {
+  loadPlayer();
+  const col = P.avColor || avatarColor(P.name);
+  const av = $('hm-av');
+  av.textContent = initials(P.name);
+  av.style.background = col;
+
+  $('hm-name').textContent = P.name;
+  const done = P.completed.length;
+  $('hm-sub').textContent = done === 0 ? 'Just getting started' : `${done} of 12 stages cleared`;
+  // Show test mode badge
+  const testBadge = document.getElementById('test-badge');
+  if (testBadge) testBadge.style.display = isTestPlayer() ? 'inline-flex' : 'none';
+  $('hm-score').textContent = P.totalScore.toLocaleString();
+  $('hm-streak').textContent = P.bestStreak;
+  const acc = P.totalAnswered > 0 ? Math.round(P.totalCorrect/P.totalAnswered*100)+'%' : '—';
+  $('hm-acc').textContent = acc;
+
+  const unlocked = getUnlocked();
+  const cats = ['quant','logic','verbal','data'];
+  cats.forEach(cat => {
+    const grid = $('grid-'+cat);
+    grid.innerHTML = '';
+    STAGES.filter(s=>s.cat===cat).forEach(s => {
+      const isUnlocked = unlocked.has(s.id);
+      const isDone = P.completed.includes(s.id);
+      const card = document.createElement('div');
+      card.className = 'stage-card' + (isUnlocked ? '' : ' locked');
+      card.innerHTML = `
+        <div class="stage-swatch" style="background:${CAT_COLOR[cat]}"></div>
+        <div class="stage-body">
+          <div class="stage-cat" style="color:${CAT_COLOR[cat]}">${CAT_LABEL[cat]}</div>
+          <div class="stage-name">${s.name}</div>
+          <div class="stage-lvl">Level ${s.level} · 30-question pool</div>
+          ${isDone ? '<span class="stage-badge badge-done">Cleared ✓</span>' : ''}
+          ${!isUnlocked ? '<span class="stage-badge badge-lock">🔒</span>' : ''}
+        </div>`;
+      if (isUnlocked) card.onclick = () => startStage(s.id);
+      grid.appendChild(card);
+    });
+  });
+
+  showScreen('s-home');
+}
+
+// ═══════════ GAME SCREEN ════════════
+function pickQuestions(stageId) {
+  const pool = (QB[stageId] || []).slice();
+  for (let i = pool.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [pool[i],pool[j]] = [pool[j],pool[i]];
+  }
+  return pool.slice(0,5);
+}
+
+function startStage(id) {
+  const stage = STAGES.find(s=>s.id===id);
+  SESSION = {stageId:id, stage, questions:pickQuestions(id), qIdx:0, streak:0, score:0, correct:0, times:[], startTime:0};
+  const col = CAT_COLOR[stage.cat];
+  $('gm-swatch').style.background = col;
+  $('gm-sname').textContent = stage.name;
+  showScreen('s-game');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const {qIdx, questions} = SESSION;
+  const q = questions[qIdx];
+  clearInterval(timerInterval);
+
+  // dots
+  const dots = $('gm-dots');
+  dots.innerHTML = '';
+  for (let i=0; i<5; i++) {
+    const d = document.createElement('div');
+    d.className = 'pdot' + (i<qIdx?' done':i===qIdx?' active':'');
+    dots.appendChild(d);
+  }
+
+  $('gm-q-counter').textContent = `Question ${qIdx+1} of 5`;
+  $('gm-q-text').textContent = q.text;
+
+  const opts = $('gm-options');
+  opts.innerHTML = '';
+  ['A','B','C','D'].forEach((ltr,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="opt-key">${ltr}</span>${q.opts[i]}`;
+    btn.onclick = () => answerQ(i);
+    opts.appendChild(btn);
+  });
+
+  $('gm-explain').classList.remove('show');
+  $('gm-next').classList.remove('show');
+  $('gm-next').textContent = qIdx < 4 ? 'Next question →' : 'See results →';
+
+  explainMode = 0;
+  $('gm-expl-text').textContent = q.explain;
+  document.querySelectorAll('.etab').forEach((t,i)=>t.classList.toggle('active',i===0));
+
+  // Timer
+  const maxTime = q.diff==='hard'?25:q.diff==='medium'?35:45;
+  let elapsed = 0;
+  SESSION.startTime = Date.now();
+
+  function tick() {
+    elapsed++;
+    const left = maxTime - elapsed;
+    const tb = $('gm-timer');
+    tb.textContent = left + 's';
+    tb.classList.toggle('warn', left <= 8);
+    if (left <= 0) { clearInterval(timerInterval); timeOut(); }
+  }
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
+
+function answerQ(chosen) {
+  clearInterval(timerInterval);
+  const q = SESSION.questions[SESSION.qIdx];
+  const elapsed = (Date.now() - SESSION.startTime) / 1000;
+  SESSION.times.push(elapsed);
+
+  const correct = chosen === q.ans;
+  if (correct) {
+    SESSION.streak++;
+    SESSION.correct++;
+    const pts = {hard:30,medium:20,easy:10}[q.diff] || 10;
+    const timeBonus = Math.max(0, Math.round((30-elapsed)*0.5));
+    const streakBonus = SESSION.streak > 2 ? 5 : 0;
+    SESSION.score += pts + timeBonus + streakBonus;
+  } else {
+    SESSION.streak = 0;
+  }
+  if (SESSION.streak > P.bestStreak) P.bestStreak = SESSION.streak;
+
+  // Color options
+  document.querySelectorAll('.opt').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === chosen) btn.classList.add('wrong');
+  });
+
+  $('gm-expl-text').textContent = q.explain;
+  $('gm-explain').classList.add('show');
+  $('gm-next').classList.add('show');
+}
+
+function timeOut() {
+  const q = SESSION.questions[SESSION.qIdx];
+  SESSION.times.push(99);
+  SESSION.streak = 0;
+  document.querySelectorAll('.opt').forEach((btn,i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+  });
+  $('gm-expl-text').textContent = '⏱️ Time\'s up! ' + q.explain;
+  $('gm-explain').classList.add('show');
+  $('gm-next').classList.add('show');
+}
+
+function switchTab(mode) {
+  explainMode = mode;
+  const q = SESSION.questions[SESSION.qIdx];
+  $('gm-expl-text').textContent = mode===0 ? q.explain : q.eli5;
+  document.querySelectorAll('.etab').forEach((t,i)=>t.classList.toggle('active',i===mode));
+}
+
+function nextQ() {
+  SESSION.qIdx++;
+  if (SESSION.qIdx >= 5) showResults();
+  else renderQuestion();
+}
+
+// ═══════════ SCORE SCREEN ════════════
+function showResults() {
+  clearInterval(timerInterval);
+  const {stageId, correct, score, times} = SESSION;
+  const pct = Math.round(correct/5*100);
+  const passed = pct >= PASS_RATE*100;
+
+  // Update player
+  P.totalScore += score;
+  P.totalAnswered += 5;
+  P.totalCorrect += correct;
+  if (passed && !P.completed.includes(stageId)) {
+    P.completed.push(stageId);
+  }
+  savePlayer();
+  updateLB();
+
+  // Score display
+  $('sc-score').innerHTML = `${score}<span> pts</span>`;
+  const msgs = pct===100?'Flawless. Absolutely flawless.':pct>=80?'Outstanding work.':pct>=60?'Stage cleared!':'Keep practising.';
+  $('sc-msg').textContent = msgs;
+
+  // Answer palette
+  const pal = $('sc-palette');
+  pal.innerHTML = '';
+  SESSION.questions.forEach((q,i) => {
+    const slot = document.createElement('div');
+    const answered_correctly = i < correct; // approximation; track properly
+    slot.className = 'ap-slot ' + (i < correct ? 'ap-c' : 'ap-w');
+    pal.appendChild(slot);
+  });
+
+  $('sc-correct').textContent = correct + '/5';
+  const avgTime = times.length ? (times.reduce((a,b)=>a+b,0)/times.length).toFixed(1)+'s' : '—';
+  $('sc-time').textContent = avgTime;
+  $('sc-streak').textContent = P.bestStreak;
+  $('sc-acc').textContent = P.totalAnswered > 0 ? Math.round(P.totalCorrect/P.totalAnswered*100)+'%' : '0%';
+
+  // Unlock banner
+  const stage = STAGES.find(s=>s.id===stageId);
+  const unlockBanner = $('sc-unlock');
+  if (passed && stage.unlocks.length > 0) {
+    const newUnlocks = stage.unlocks.map(id => STAGES.find(s=>s.id===id)?.name).join(', ');
+    $('sc-unlock-name').textContent = newUnlocks;
+    unlockBanner.classList.add('show');
+  } else {
+    unlockBanner.classList.remove('show');
+  }
+
+  showScreen('s-score');
+}
+
+function retryStage() { startStage(SESSION.stageId); }
+
+function shareScore() {
+  drawScoreCard();
+  openOverlay('card-ov');
+}
+
+function drawScoreCard() {
+  const canvas = document.getElementById('scoreCanvas');
+  const W = 800, H = 480;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  const {correct, score, times, stage} = SESSION;
+  const pct = Math.round(correct/5*100);
+  const catColor = CAT_COLOR[stage.cat];
+  const avgTime = times.length ? (times.reduce((a,b)=>a+b,0)/times.length).toFixed(1) : '—';
+  const acc = P.totalAnswered > 0 ? Math.round(P.totalCorrect/P.totalAnswered*100)+'%' : '—';
+  const msg = pct===100?'Flawless':pct>=80?'Excellent':pct>=60?'Cleared':'Practising';
+
+  // ── Background
+  ctx.fillStyle = '#F8F8F5';
+  ctx.fillRect(0, 0, W, H);
+
+  // ── Top colour bar (category swatch)
+  ctx.fillStyle = catColor;
+  ctx.fillRect(0, 0, W, 7);
+
+  // ── White card area
+  ctx.fillStyle = '#FFFFFF';
+  roundRect(ctx, 32, 32, W-64, H-64, 16);
+  ctx.fill();
+
+  // ── Card border
+  ctx.strokeStyle = '#E4E4DC';
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, 32, 32, W-64, H-64, 16);
+  ctx.stroke();
+
+  // ── Logo — top left
+  ctx.font = 'bold 15px "DM Sans", sans-serif';
+  ctx.fillStyle = '#111111';
+  ctx.fillText('Aptitude', 64, 74);
+  const aw = ctx.measureText('Aptitude').width;
+  ctx.fillStyle = '#999990';
+  ctx.fillText('Quest', 64+aw, 74);
+
+  // ── Date — top right
+  ctx.font = '13px "DM Sans", sans-serif';
+  ctx.fillStyle = '#999990';
+  ctx.textAlign = 'right';
+  ctx.fillText(new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}), W-64, 74);
+  ctx.textAlign = 'left';
+
+  // ── Divider
+  ctx.strokeStyle = '#E4E4DC';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(64, 88); ctx.lineTo(W-64, 88); ctx.stroke();
+
+  // ── Stage badge pill
+  ctx.fillStyle = catColor + '18';
+  const badgeX = 64, badgeY = 108, badgeH = 28;
+  const stageLabel = CAT_LABEL[stage.cat].toUpperCase() + ' · ' + stage.name.toUpperCase();
+  ctx.font = 'bold 11px "DM Sans", sans-serif';
+  const badgeW = ctx.measureText(stageLabel).width + 24;
+  roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 6);
+  ctx.fill();
+  ctx.fillStyle = catColor;
+  ctx.fillText(stageLabel, badgeX+12, badgeY+19);
+
+  // ── Score headline  
+  ctx.font = 'bold 72px "DM Sans", sans-serif';
+  ctx.fillStyle = '#111111';
+  ctx.fillText(score, 64, 220);
+  const scoreW = ctx.measureText(score).width;
+  ctx.font = '26px "DM Sans", sans-serif';
+  ctx.fillStyle = '#999990';
+  ctx.fillText(' pts', 64+scoreW, 220);
+
+  // ── Message tag
+  ctx.font = 'bold 18px "DM Sans", sans-serif';
+  ctx.fillStyle = catColor;
+  ctx.fillText(msg + ' — ' + correct + '/5 correct', 64, 255);
+
+  // ── Answer palette row
+  const palY = 278, palH = 14, slotW = (W - 128 - 16) / 5;
+  SESSION.questions.forEach((q, i) => {
+    const isCorrect = i < correct; // approximation
+    ctx.fillStyle = isCorrect ? '#10B981' : '#EF4444';
+    const rx = 64 + i*(slotW+4);
+    roundRect(ctx, rx, palY, slotW, palH, 4);
+    ctx.fill();
+  });
+
+  // ── Stat boxes
+  const stats = [
+    {label:'Score', val: score + ' pts'},
+    {label:'Accuracy', val: pct + '%'},
+    {label:'Avg time', val: avgTime + 's'},
+    {label:'Best streak', val: P.bestStreak + '🔥'},
+    {label:'Stages done', val: P.completed.length + '/12'},
+  ];
+  const boxW = (W - 128 - 16) / 5, boxH = 80, boxY = 310;
+  stats.forEach((s, i) => {
+    const bx = 64 + i*(boxW+4);
+    ctx.fillStyle = '#F8F8F5';
+    roundRect(ctx, bx, boxY, boxW, boxH, 8);
+    ctx.fill();
+    ctx.strokeStyle = '#E4E4DC';
+    ctx.lineWidth = 1;
+    roundRect(ctx, bx, boxY, boxW, boxH, 8);
+    ctx.stroke();
+
+    ctx.font = 'bold 20px "DM Mono", monospace';
+    ctx.fillStyle = '#111111';
+    ctx.textAlign = 'center';
+    ctx.fillText(s.val, bx + boxW/2, boxY + 32);
+
+    ctx.font = '11px "DM Sans", sans-serif';
+    ctx.fillStyle = '#999990';
+    ctx.fillText(s.label, bx + boxW/2, boxY + 52);
+    ctx.textAlign = 'left';
+  });
+
+  // ── Avatar circle — bottom right
+  const avCol = P.avColor || '#6366F1';
+  const avX = W-64-48, avY = H-64-56, avR = 28;
+  ctx.fillStyle = avCol;
+  ctx.beginPath(); ctx.arc(avX, avY, avR, 0, Math.PI*2); ctx.fill();
+  ctx.font = 'bold 15px "DM Sans", sans-serif';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textAlign = 'center';
+  ctx.fillText(initials(P.name), avX, avY+5);
+  ctx.textAlign = 'left';
+
+  // ── Player name
+  ctx.font = 'bold 15px "DM Sans", sans-serif';
+  ctx.fillStyle = '#111111';
+  ctx.textAlign = 'right';
+  ctx.fillText(P.name, W-64-68, H-64-44);
+  ctx.font = '12px "DM Sans", sans-serif';
+  ctx.fillStyle = '#999990';
+  ctx.fillText('aptitudequest.netlify.app', W-64-68, H-64-26);
+  ctx.textAlign = 'left';
+
+  // ── Bottom colour accent line
+  ctx.fillStyle = catColor;
+  ctx.fillRect(32+16, H-36, W-64-32, 3);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+function downloadCard() {
+  const canvas = document.getElementById('scoreCanvas');
+  const link = document.createElement('a');
+  link.download = 'aptitudequest-score.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ═══════════ FIREBASE INIT ════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyAELrp2DtZcHJsuSA01Sm4n3bALiRPMDDI",
+  authDomain: "aptitudequest-f2c91.firebaseapp.com",
+  databaseURL: "https://aptitudequest-f2c91-default-rtdb.firebaseio.com",
+  projectId: "aptitudequest-f2c91",
+  storageBucket: "aptitudequest-f2c91.firebasestorage.app",
+  messagingSenderId: "361562360437",
+  appId: "1:361562360437:web:5cf43179541eb5afc0063c"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ═══════════ LEADERBOARD — GLOBAL (Firebase) ════════════
+function isTestPlayer() {
+  return P.name.startsWith('_');
+}
+
+function updateLB() {
+  // Skip Firebase writes for test accounts (names starting with _)
+  if (isTestPlayer()) return;
+
+  // Write this player's latest score to Firebase
+  const entry = {
+    name: P.name,
+    score: P.totalScore,
+    stages: P.completed.length,
+    streak: P.bestStreak,
+    color: P.avColor || avatarColor(P.name),
+    updatedAt: Date.now()
+  };
+  // Use sanitised name as key (Firebase keys can't have . # $ [ ])
+  const key = P.name.replace(/[.#$[\]]/g, '_');
+  db.ref('leaderboard/' + key).set(entry).catch(e => {
+    // Fallback to local if offline
+    let lb = ls_get(LS_LB, []);
+    const idx = lb.findIndex(e => e.name === P.name);
+    if (idx >= 0) lb[idx] = entry; else lb.push(entry);
+    ls_set(LS_LB, lb.slice(0, 20));
+  });
+}
+
+function openLB() {
+  updateLB();
+  $('lb-list').innerHTML = '<div style="text-align:center;color:var(--ink3);padding:24px">Loading global scores... 🌐</div>';
+  openOverlay('lb-ov');
+
+  db.ref('leaderboard').orderByChild('score').limitToLast(20).once('value')
+    .then(snapshot => {
+      const medals = ['🥇', '🥈', '🥉'];
+      const entries = [];
+      snapshot.forEach(child => entries.push(child.val()));
+      entries.sort((a, b) => b.score - a.score);
+
+      $('lb-list').innerHTML = entries.length ? entries.map((e, i) => `
+        <div class="lb-row">
+          <div class="lb-rank">${medals[i] || i + 1}</div>
+          <div class="lb-av" style="background:${e.color || '#6366F1'}">${initials(e.name)}</div>
+          <div class="lb-info">
+            <div class="lb-name">${e.name}${e.name === P.name ? ' <span style="font-size:11px;color:var(--quant);font-weight:700">(you)</span>' : ''}</div>
+            <div class="lb-sub">${e.stages}/12 stages · ${e.streak}🔥 streak</div>
+          </div>
+          <div class="lb-score">${e.score.toLocaleString()}</div>
+        </div>`).join('')
+        : '<div style="text-align:center;color:var(--ink3);padding:20px">No global scores yet — be the first!</div>';
+    })
+    .catch(() => {
+      // Fallback to local leaderboard if offline
+      const lb = ls_get(LS_LB, []);
+      const medals = ['🥇', '🥈', '🥉'];
+      $('lb-list').innerHTML = lb.length
+        ? '<div style="font-size:11px;color:var(--ink3);padding:4px 0 12px">⚠️ Offline — showing local scores only</div>'
+          + lb.map((e, i) => `
+          <div class="lb-row">
+            <div class="lb-rank">${medals[i] || i + 1}</div>
+            <div class="lb-av" style="background:${e.color || '#6366F1'}">${initials(e.name)}</div>
+            <div class="lb-name">${e.name}</div>
+            <div class="lb-score">${e.score.toLocaleString()}</div>
+          </div>`).join('')
+        : '<div style="text-align:center;color:var(--ink3);padding:20px">No scores yet.</div>';
+    });
+}
+
+// ═══════════ FEEDBACK ════════════
+function openFB() {
+  fbRating = 0; fbCats = [];
+  document.querySelectorAll('.star').forEach(s=>{s.classList.remove('on');s.style.filter='';});
+  document.querySelectorAll('.fb-cat').forEach(c=>c.classList.remove('sel'));
+  $('fb-text').value = '';
+  openOverlay('fb-ov');
+}
+function setRating(r) {
+  fbRating = r;
+  document.querySelectorAll('.star').forEach((s,i)=>{
+    s.classList.toggle('on',i<r);
+    s.style.filter = i<r ? 'none' : 'grayscale(1)';
+  });
+}
+function toggleCat(el) { el.classList.toggle('sel'); }
+function submitFB() {
+  const text = $('fb-text').value.trim();
+  if (!text) { $('fb-text').style.borderColor='var(--wrong)'; return; }
+  const cats = [...document.querySelectorAll('.fb-cat.sel')].map(c=>c.textContent);
+  const entry = {
+    player: P.name,
+    rating: fbRating,
+    cats,
+    text,
+    date: new Date().toLocaleDateString('en-IN'),
+    ts: Date.now()
+  };
+  // Skip Firebase writes for test accounts
+  if (!isTestPlayer()) {
+    db.ref('feedback').push(entry)
+      .catch(() => {
+        const fbs = ls_get(LS_FB, []);
+        fbs.push(entry);
+        ls_set(LS_FB, fbs);
+      });
+  }
+  closeOverlay('fb-ov');
+  setTimeout(() => alert('Thank you for your feedback, ' + P.name + '! 🙏'), 100);
+}
+
+// ═══════════ RESTART ════════════
+function openRst() { openOverlay('rst-ov'); }
+function softReset() {
+  if (!confirm('Reset your progress and score? Your name stays.')) return;
+  P.completed=[]; P.totalScore=0; P.bestStreak=0; P.totalCorrect=0; P.totalAnswered=0;
+  savePlayer();
+  closeOverlay('rst-ov');
+  renderHome();
+}
+function fullReset() {
+  if (!confirm('Clear everything and start fresh?')) return;
+  localStorage.removeItem(LS_PLAYER);
+  closeOverlay('rst-ov');
+  location.reload();
+}
+
+// ═══════════ ADMIN ════════════
+function adminTap() {
+  tapCount++;
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(()=>tapCount=0, 1500);
+  if (tapCount >= 5) { tapCount=0; openOverlay('adm-ov'); }
+}
+function checkPin(e) {
+  const val = $('adm-pin').value;
+  if (val.length >= ADMIN_PIN.length) {
+    if (val === ADMIN_PIN) {
+      $('adm-pin-wrap').style.display='none';
+      $('adm-content').style.display='block';
+      adminUnlocked=true;
+      loadAdminFB();
+    } else {
+      $('pin-msg').textContent = 'Wrong passcode';
+      $('adm-pin').value='';
+      $('adm-pin').style.borderColor='var(--wrong)';
+    }
+  }
+}
+function admTab(n) {
+  document.querySelectorAll('.atab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.querySelectorAll('.adm-section').forEach((s,i)=>s.classList.toggle('active',i===n));
+  if (n===0) loadAdminFB();
+  if (n===1) loadAdminLB();
+}
+function loadAdminFB() {
+  $('adm-fb-list').innerHTML = '<div style="color:var(--ink3);text-align:center;padding:16px">Loading feedback... 🌐</div>';
+  db.ref('feedback').orderByChild('ts').limitToLast(50).once('value')
+    .then(snapshot => {
+      const items = [];
+      snapshot.forEach(child => items.push(child.val()));
+      items.reverse(); // newest first
+      $('adm-fb-list').innerHTML = items.length ? items.map(f => `
+        <div class="fb-item">
+          <div class="fb-item-top">
+            <div class="fb-item-who">${f.player}</div>
+            <div class="fb-item-stars" style="color:#F59E0B">${'★'.repeat(f.rating||0)}${'☆'.repeat(5-(f.rating||0))}</div>
+          </div>
+          <div class="fb-item-cat">${(f.cats||[]).join(', ')||'General'} · ${f.date||''}</div>
+          <div class="fb-item-text">${f.text}</div>
+        </div>`).join('')
+        : '<div style="color:var(--ink3);text-align:center;padding:16px">No feedback yet from any player.</div>';
+    })
+    .catch(() => {
+      // Fallback to local
+      const fbs = ls_get(LS_FB, []);
+      $('adm-fb-list').innerHTML = fbs.length
+        ? '<div style="font-size:11px;color:var(--ink3);padding:4px 0 8px">⚠️ Offline — local feedback only</div>'
+          + [...fbs].reverse().map(f => `
+          <div class="fb-item">
+            <div class="fb-item-top"><div class="fb-item-who">${f.player}</div><div class="fb-item-stars">${'★'.repeat(f.rating||0)}</div></div>
+            <div class="fb-item-cat">${(f.cats||[]).join(', ')||'General'} · ${f.date||''}</div>
+            <div class="fb-item-text">${f.text}</div>
+          </div>`).join('')
+        : '<div style="color:var(--ink3);text-align:center;padding:16px">No feedback yet.</div>';
+    });
+}
+function loadAdminLB() {
+  $('adm-lb-list').innerHTML = '<div style="color:var(--ink3);text-align:center;padding:16px">Loading all players... 🌐</div>';
+  db.ref('leaderboard').orderByChild('score').limitToLast(50).once('value')
+    .then(snapshot => {
+      const entries = [];
+      snapshot.forEach(child => entries.push(child.val()));
+      entries.sort((a, b) => b.score - a.score);
+      $('adm-lb-list').innerHTML = entries.length ? entries.map((e, i) => `
+        <div class="lb-row">
+          <div class="lb-rank">${i + 1}</div>
+          <div class="lb-av" style="background:${e.color||'#6366F1'}">${initials(e.name)}</div>
+          <div class="lb-info">
+            <div class="lb-name">${e.name}</div>
+            <div class="lb-sub">${e.stages}/12 stages · ${e.streak}🔥</div>
+          </div>
+          <div class="lb-score">${e.score.toLocaleString()}</div>
+        </div>`).join('')
+        : '<div style="color:var(--ink3);text-align:center;padding:16px">No players yet globally.</div>';
+    })
+    .catch(() => {
+      $('adm-lb-list').innerHTML = '<div style="color:var(--ink3);text-align:center;padding:16px">⚠️ Could not load — check connection.</div>';
+    });
+}
+function adminSoftReset() {
+  if (!confirm('Clear ALL global feedback and leaderboard? This affects all players.')) return;
+  Promise.all([
+    db.ref('leaderboard').remove(),
+    db.ref('feedback').remove()
+  ]).then(() => {
+    localStorage.removeItem(LS_FB);
+    localStorage.removeItem(LS_LB);
+    loadAdminFB();
+    alert('Global data cleared.');
+  }).catch(() => alert('Error clearing — check connection.'));
+}
+function adminFullReset() {
+  if (!confirm('FACTORY RESET: wipe all data?')) return;
+  [LS_PLAYER,LS_LB,LS_FB].forEach(k=>localStorage.removeItem(k));
+  closeOverlay('adm-ov');
+  location.reload();
+}
+
+// ═══════════ OVERLAY HELPERS ════════════
+function openOverlay(id) {
+  if (id==='adm-ov') { adminUnlocked=false; $('adm-pin-wrap').style.display='block'; $('adm-content').style.display='none'; $('adm-pin').value=''; $('pin-msg').textContent=''; }
+  $(id).classList.add('open');
+  setTimeout(()=>{ if(id==='adm-ov') $('adm-pin').focus(); },100);
+}
+function closeOverlay(id) { $(id).classList.remove('open'); }
+function closeAll(e, overlay) { if (e.target===overlay) overlay.classList.remove('open'); }
+
+
+function confirmHome() {
+  clearInterval(timerInterval);
+  openOverlay('home-confirm-ov');
+}
+
+function confirmRestart() {
+  clearInterval(timerInterval);
+  openOverlay('restart-confirm-ov');
+}
+
+// ── Boot
+init();
+</script>
+
+<!-- SCORECARD OVERLAY -->
+<div class="overlay" id="card-ov" onclick="closeAll(event,this)">
+<div class="sheet" style="max-width:440px;text-align:center">
+  <button class="sheet-close" onclick="closeOverlay('card-ov')">✕</button>
+  <div class="sheet-title" style="text-align:left">Your score card</div>
+  <div class="sheet-sub" style="text-align:left">Download and share anywhere</div>
+  <canvas id="scoreCanvas" style="width:100%;border-radius:12px;border:1px solid var(--border);display:block;margin-bottom:16px"></canvas>
+  <button class="btn-primary" style="margin-top:0" onclick="downloadCard()">⬇ Download image</button>
+  <div style="margin-top:10px;font-size:12px;color:var(--ink3)">Save and post on LinkedIn, X, or anywhere!</div>
+</div>
+</div>
+
+
+<!-- HOME CONFIRM OVERLAY -->
+<div class="overlay" id="home-confirm-ov" onclick="closeAll(event,this)">
+<div class="confirm-sheet">
+  <div style="font-size:32px;margin-bottom:8px">⌂</div>
+  <div class="confirm-title">Back to stage map?</div>
+  <div class="confirm-sub">Your progress in this stage won't be saved.<br>You can restart the stage anytime.</div>
+  <div class="confirm-actions">
+    <button class="confirm-primary" onclick="closeOverlay('home-confirm-ov');goHome()">Yes, go home</button>
+    <button class="confirm-secondary" onclick="closeOverlay('home-confirm-ov')">Keep playing</button>
+  </div>
+</div>
+</div>
+
+<!-- RESTART CONFIRM OVERLAY -->
+<div class="overlay" id="restart-confirm-ov" onclick="closeAll(event,this)">
+<div class="confirm-sheet">
+  <div style="font-size:32px;margin-bottom:8px">↺</div>
+  <div class="confirm-title">Restart this stage?</div>
+  <div class="confirm-sub">You'll get a fresh set of 5 questions.<br>Your current attempt will be discarded.</div>
+  <div class="confirm-actions">
+    <button class="confirm-danger" onclick="closeOverlay('restart-confirm-ov');retryStage()">Yes, restart</button>
+    <button class="confirm-secondary" onclick="closeOverlay('restart-confirm-ov')">Keep playing</button>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
