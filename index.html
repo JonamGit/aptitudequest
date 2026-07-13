@@ -26,131 +26,198 @@
   --correct:#10B981;
   --wrong:#EF4444;
   --radius:12px;
+  --sidebar:260px;
 }
 html{font-size:16px;-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.5}
 button{font-family:inherit;cursor:pointer;border:none;outline:none}
-input{font-family:inherit;outline:none}
+input,textarea,select{font-family:inherit;outline:none}
 
-/* ── LAYOUT ── */
-.wrap{max-width:680px;margin:0 auto;padding:0 20px}
+/* ── SCREENS ── */
 .screen{display:none;min-height:100vh}
 .screen.active{display:block}
 
-/* ── TOP BAR ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--border);margin-bottom:32px}
+/* ══════════════════════════════
+   ENTRY SCREEN — centered hero
+══════════════════════════════ */
+.entry-outer{min-height:100vh;display:flex;flex-direction:column}
+.entry-topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border)}
 .logo{font-size:15px;font-weight:700;letter-spacing:-.3px;color:var(--ink)}
 .logo span{color:var(--ink3)}
-.topbar-actions{display:flex;gap:8px;align-items:center}
-.icon-btn{width:36px;height:36px;border-radius:8px;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:16px;transition:all .15s}
-.icon-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
-
-/* ── ENTRY SCREEN ── */
-.entry-hero{padding:48px 0 40px}
-.entry-eyebrow{font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px}
-.entry-title{font-size:clamp(36px,8vw,64px);font-weight:900;line-height:1;letter-spacing:-2px;color:var(--ink);margin-bottom:16px}
+.entry-body{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 61px)}
+.entry-left{padding:60px 56px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border)}
+.entry-right{padding:60px 56px;display:flex;flex-direction:column;justify-content:center;background:var(--surface)}
+.entry-eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:20px}
+.entry-title{font-size:clamp(40px,5vw,68px);font-weight:900;line-height:.95;letter-spacing:-2.5px;color:var(--ink);margin-bottom:24px}
 .entry-title em{font-style:normal;color:var(--quant)}
-.entry-sub{font-size:17px;color:var(--ink2);max-width:460px;line-height:1.6;margin-bottom:40px}
-.palette-strip{display:flex;height:6px;border-radius:100px;overflow:hidden;margin-bottom:48px;gap:2px}
+.entry-sub{font-size:17px;color:var(--ink2);line-height:1.65;margin-bottom:36px;max-width:420px}
+.palette-strip{display:flex;height:5px;border-radius:100px;overflow:hidden;gap:3px;max-width:320px}
 .palette-strip span{flex:1;border-radius:100px}
-.entry-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
-.entry-form label{display:block;font-size:13px;font-weight:500;margin-bottom:8px;color:var(--ink2)}
-.entry-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:16px;font-weight:500;color:var(--ink);background:var(--bg);transition:border .15s}
-.entry-input:focus{border-color:var(--ink)}
+.entry-features{display:flex;flex-direction:column;gap:14px;margin-bottom:40px}
+.entry-feature{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink2)}
+.entry-feature-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.entry-form-label{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:8px;display:block}
+.entry-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;font-size:16px;font-weight:500;color:var(--ink);background:var(--bg);transition:border .15s;margin-bottom:12px}
+.entry-input:focus{border-color:var(--ink);background:var(--surface)}
 .entry-input::placeholder{color:var(--ink3)}
-.btn-primary{width:100%;margin-top:16px;padding:14px;background:var(--ink);color:#fff;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:-.2px;transition:opacity .15s}
-.btn-primary:hover{opacity:.85}
-.back-link{display:block;text-align:center;margin-top:16px;font-size:13px;color:var(--ink3);text-decoration:none;cursor:pointer}
+.btn-primary{width:100%;padding:15px;background:var(--ink);color:#fff;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:-.2px;transition:opacity .15s}
+.btn-primary:hover{opacity:.82}
+.back-link{display:block;text-align:center;margin-top:14px;font-size:13px;color:var(--ink3);cursor:pointer}
 .back-link:hover{color:var(--ink)}
 
-/* ── HOME SCREEN ── */
-.home-header{padding:28px 0 24px;display:flex;align-items:flex-start;justify-content:space-between}
-.player-info{display:flex;align-items:center;gap:12px}
-.avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0}
-.player-name{font-size:17px;font-weight:700;letter-spacing:-.3px}
-.player-sub{font-size:13px;color:var(--ink3)}
-.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:28px}
-.stat-cell{background:var(--surface);padding:16px;text-align:center}
-.stat-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--ink);display:block;letter-spacing:-1px}
-.stat-lbl{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-top:2px}
-.section-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
-.stages-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+/* ══════════════════════════════
+   APP LAYOUT — sidebar + main
+══════════════════════════════ */
+.app-layout{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-top{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo{font-size:14px;font-weight:700;letter-spacing:-.3px;color:var(--ink);margin-bottom:16px}
+.sidebar-logo span{color:var(--ink3)}
+.sidebar-player{display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.player-name{font-size:14px;font-weight:700;letter-spacing:-.2px}
+.player-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+
+.sidebar-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.sstat{background:var(--surface);padding:12px 14px;cursor:default}
+.sstat-num{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--ink);display:block;letter-spacing:-1px;line-height:1}
+.sstat-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-top:3px}
+
+.sidebar-nav{flex:1;padding:12px 12px 8px;overflow-y:auto}
+.nav-cat-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:10px 8px 6px}
+.nav-stage{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:2px;transition:background .15s;border:none;background:transparent;width:100%;text-align:left}
+.nav-stage:hover:not(.locked){background:var(--bg)}
+.nav-stage.active{background:var(--bg);border:1px solid var(--border)}
+.nav-stage.locked{opacity:.4;cursor:not-allowed}
+.nav-stage.done .nav-dot{background:var(--correct)}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--border)}
+.nav-stage-name{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:-.1px;flex:1}
+.nav-stage-lck{font-size:11px}
+.nav-stage.done .nav-check{display:inline;font-size:11px;color:var(--correct)}
+.nav-check{display:none}
+
+.sidebar-actions{padding:12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap}
+.sact-btn{flex:1;min-width:0;padding:8px 6px;border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;color:var(--ink2);background:var(--surface);text-align:center;white-space:nowrap;transition:all .15s}
+.sact-btn:hover{border-color:var(--ink);color:var(--ink)}
+.sact-btn.danger{border-color:#FECACA;color:#EF4444}
+.sact-btn.danger:hover{background:#FEF2F2}
+
+/* ── MAIN CONTENT AREA ── */
+.main-area{display:flex;flex-direction:column;min-height:100vh;overflow-y:auto}
+.main-topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 36px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10}
+.main-title{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.main-topbar-right{display:flex;gap:8px;align-items:center}
+.icon-btn{width:34px;height:34px;border-radius:8px;background:transparent;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:15px;transition:all .15s}
+.icon-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.main-content{flex:1;padding:36px}
+
+/* ── HOME MAIN CONTENT ── */
+.home-welcome{margin-bottom:28px}
+.home-welcome h2{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.home-welcome p{font-size:14px;color:var(--ink3)}
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .stage-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
 .stage-card:hover:not(.locked){transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.stage-card.locked{opacity:.5;cursor:not-allowed}
+.stage-card.locked{opacity:.45;cursor:not-allowed}
+.stage-card.done{border-color:var(--correct)}
 .stage-swatch{height:4px;width:100%}
 .stage-body{padding:14px}
-.stage-cat{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-.stage-name{font-size:14px;font-weight:700;letter-spacing:-.2px;color:var(--ink);margin-bottom:2px}
+.stage-cat{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.stage-name{font-size:14px;font-weight:700;letter-spacing:-.2px;color:var(--ink);margin-bottom:4px}
 .stage-lvl{font-size:11px;color:var(--ink3)}
-.stage-badge{position:absolute;top:12px;right:12px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;letter-spacing:.05em}
+.stage-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px}
 .badge-done{background:#ECFDF5;color:#065F46}
-.badge-lock{background:var(--bg);color:var(--ink3)}
 
-/* ── GAME SCREEN ── */
-.game-top{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:28px}
-.game-stage-info{display:flex;align-items:center;gap:10px}
-.game-swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
-.game-stage-name{font-size:14px;font-weight:600;letter-spacing:-.2px}
-.progress-dots{display:flex;gap:5px;align-items:center}
-.pdot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .2s}
+/* ── GAME LAYOUT ── */
+.game-layout{display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 53px);gap:0}
+.game-left{padding:32px 28px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:24px;background:var(--surface)}
+.game-stage-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.game-stage-title{font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px}
+.game-stage-sub{font-size:13px;color:var(--ink3)}
+.game-progress-block{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px}
+.game-prog-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.prog-dots{display:flex;gap:6px;margin-bottom:14px}
+.pdot{flex:1;height:6px;border-radius:100px;background:var(--border);transition:background .2s}
 .pdot.done{background:var(--correct)}
 .pdot.active{background:var(--ink)}
-.timer-badge{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;padding:5px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--ink);min-width:50px;text-align:center}
-.timer-badge.warn{border-color:var(--wrong);color:var(--wrong)}
-.q-counter{font-size:12px;font-weight:500;color:var(--ink3);margin-bottom:8px;letter-spacing:.05em}
-.q-text{font-size:18px;font-weight:600;line-height:1.5;letter-spacing:-.3px;color:var(--ink);margin-bottom:24px}
-.options{display:grid;gap:8px;margin-bottom:24px}
-.opt{border:1px solid var(--border);border-radius:10px;padding:13px 16px;font-size:15px;font-weight:500;color:var(--ink);background:var(--surface);text-align:left;transition:all .15s;display:flex;align-items:center;gap:10px}
-.opt-key{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--ink3);flex-shrink:0}
-.opt:hover:not(:disabled){border-color:var(--ink);background:var(--bg)}
+.game-timer-block{text-align:center}
+.timer-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.timer-circle{width:72px;height:72px;border-radius:50%;border:2.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto;transition:border-color .3s}
+.timer-circle.warn{border-color:var(--wrong);background:#FEF2F2}
+.timer-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--ink)}
+.timer-circle.warn .timer-num{color:var(--wrong)}
+.game-streak-block{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.streak-num{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--ink)}
+.streak-label{font-size:11px;color:var(--ink3);margin-top:2px}
+.game-nav-btns{display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.gnav-btn{display:flex;align-items:center;gap:6px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--ink2);background:transparent;transition:all .15s;width:100%}
+.gnav-btn:hover{border-color:var(--ink);color:var(--ink)}
+.gnav-btn.danger{border-color:#FECACA;color:#EF4444}
+.gnav-btn.danger:hover{border-color:#EF4444;background:#FEF2F2}
+
+.game-right{padding:40px 44px;display:flex;flex-direction:column}
+.q-counter{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.q-diff-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:100px;margin-bottom:14px}
+.diff-easy{background:#ECFDF5;color:#065F46}
+.diff-medium{background:#FFFBEB;color:#92400E}
+.diff-hard{background:#FEF2F2;color:#991B1B}
+.q-text{font-size:20px;font-weight:700;line-height:1.5;letter-spacing:-.3px;color:var(--ink);margin-bottom:28px}
+.options{display:grid;gap:10px;margin-bottom:28px}
+.opt{border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;font-size:15px;font-weight:500;color:var(--ink);background:var(--surface);text-align:left;transition:all .15s;display:flex;align-items:center;gap:12px}
+.opt-key{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--ink3);flex-shrink:0;width:18px}
+.opt:hover:not(:disabled){border-color:var(--ink);background:var(--bg);transform:translateX(3px)}
 .opt.correct{border-color:var(--correct);background:#ECFDF5;color:#065F46}
 .opt.wrong{border-color:var(--wrong);background:#FEF2F2;color:#991B1B}
-.opt:disabled{cursor:default}
-.explain-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px;display:none}
+.opt:disabled{cursor:default;transform:none}
+.explain-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;display:none}
 .explain-box.show{display:block}
-.explain-tabs{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.etab{flex:1;padding:8px;font-size:12px;font-weight:600;background:transparent;color:var(--ink3);border:none;letter-spacing:.03em;transition:all .15s}
+.explain-tabs{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content}
+.etab{padding:7px 16px;font-size:12px;font-weight:600;background:transparent;color:var(--ink3);border:none;letter-spacing:.03em;transition:all .15s}
 .etab.active{background:var(--ink);color:#fff}
-.explain-content{font-size:14px;line-height:1.65;color:var(--ink2)}
-.btn-next{width:100%;padding:13px;background:var(--ink);color:#fff;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:-.2px;display:none}
+.explain-content{font-size:14px;line-height:1.7;color:var(--ink2)}
+.btn-next{padding:14px 28px;background:var(--ink);color:#fff;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:-.2px;display:none;align-self:flex-start}
 .btn-next.show{display:block}
 .btn-next:hover{opacity:.85}
 
 /* ── SCORE SCREEN ── */
-.score-wrap{padding-top:40px;padding-bottom:60px}
-.score-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
-.score-big{font-family:'DM Mono',monospace;font-size:72px;font-weight:500;line-height:1;letter-spacing:-3px;color:var(--ink);margin-bottom:4px}
-.score-big span{font-size:32px;color:var(--ink3)}
-.score-msg{font-size:18px;font-weight:600;letter-spacing:-.3px;margin-bottom:28px;color:var(--ink)}
-.answer-palette{display:flex;gap:4px;margin-bottom:32px}
-.ap-slot{flex:1;height:28px;border-radius:6px}
+.score-outer{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:var(--bg)}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px;max-width:640px;width:100%}
+.score-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.score-stage-info{display:flex;align-items:center;gap:10px}
+.score-swatch{width:10px;height:10px;border-radius:3px}
+.score-stage-name{font-size:14px;font-weight:600;color:var(--ink2)}
+.score-main{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:28px;align-items:center}
+.score-left .score-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.score-big{font-family:'DM Mono',monospace;font-size:64px;font-weight:500;line-height:1;letter-spacing:-3px;color:var(--ink)}
+.score-big span{font-size:28px;color:var(--ink3)}
+.score-msg{font-size:18px;font-weight:700;letter-spacing:-.3px;margin-top:6px}
+.answer-palette{display:flex;gap:5px;margin-bottom:28px}
+.ap-slot{flex:1;height:10px;border-radius:100px}
 .ap-c{background:var(--correct)}
 .ap-w{background:var(--wrong)}
-.score-detail{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px}
-.sd-cell{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
-.sd-num{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--ink);letter-spacing:-1px}
-.sd-lbl{font-size:12px;color:var(--ink3);margin-top:2px}
-.unlock-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:20px;display:none}
-.unlock-banner.show{display:flex;gap:12px;align-items:center}
-.unlock-icon{font-size:24px}
-.unlock-text{font-size:14px;font-weight:500;color:var(--ink);line-height:1.4}
-.unlock-text strong{display:block;font-size:15px;margin-bottom:2px}
-.score-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-sec{padding:13px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;background:var(--surface);color:var(--ink);letter-spacing:-.2px;transition:all .15s}
+.score-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+.sd-cell{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sd-num{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--ink);letter-spacing:-1px}
+.sd-lbl{font-size:11px;color:var(--ink3);margin-top:3px}
+.unlock-banner{background:var(--logic-light);border:1px solid #A7F3D0;border-radius:10px;padding:16px;margin-bottom:20px;display:none;align-items:center;gap:12px}
+.unlock-banner.show{display:flex}
+.unlock-text strong{display:block;font-size:14px;font-weight:700;margin-bottom:2px}
+.unlock-text span{font-size:13px;color:var(--ink2)}
+.score-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.btn-sec{padding:12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;background:var(--surface);color:var(--ink);transition:all .15s}
 .btn-sec:hover{border-color:var(--ink)}
-.btn-home{grid-column:1/-1;padding:13px;background:var(--ink);color:#fff;border-radius:8px;font-size:15px;font-weight:600;letter-spacing:-.2px}
+.btn-home{grid-column:1/-1;padding:14px;background:var(--ink);color:#fff;border-radius:10px;font-size:15px;font-weight:700}
 .btn-home:hover{opacity:.85}
 
 /* ── OVERLAYS ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;align-items:flex-end;justify-content:center;padding:16px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center;padding:16px}
 .overlay.open{display:flex}
 .sheet{background:var(--surface);border-radius:16px 16px 12px 12px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;padding:24px}
 .sheet-title{font-size:17px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
 .sheet-sub{font-size:13px;color:var(--ink3);margin-bottom:20px}
 .sheet-close{float:right;background:var(--bg);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:8px}
-
-/* leaderboard */
 .lb-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .lb-row:last-child{border-bottom:none}
 .lb-rank{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink3);width:24px;flex-shrink:0}
@@ -159,72 +226,66 @@ input{font-family:inherit;outline:none}
 .lb-name{font-size:14px;font-weight:600}
 .lb-sub{font-size:11px;color:var(--ink3);margin-top:1px}
 .lb-score{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;flex-shrink:0}
-
-/* feedback */
 .stars{display:flex;gap:6px;margin-bottom:16px}
-.star{font-size:28px;cursor:pointer;filter:grayscale(1);transition:filter .15s}
+.star{font-size:26px;cursor:pointer;filter:grayscale(1);transition:filter .15s}
 .star.on{filter:none}
 .fb-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
 .fb-cat{padding:6px 12px;border:1px solid var(--border);border-radius:100px;font-size:12px;font-weight:500;background:var(--surface);color:var(--ink2);cursor:pointer;transition:all .15s}
 .fb-cat.sel{border-color:var(--ink);background:var(--ink);color:#fff}
 .fb-textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;resize:vertical;min-height:80px;color:var(--ink);background:var(--bg)}
 .fb-textarea:focus{border-color:var(--ink)}
-
-/* admin */
+.fb-item{border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px}
+.fb-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.fb-item-who{font-size:13px;font-weight:600}
+.fb-item-cat{font-size:11px;color:var(--ink3);margin-bottom:4px}
+.fb-item-text{font-size:13px;color:var(--ink2)}
 .adm-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px}
 .atab{flex:1;padding:9px;font-size:12px;font-weight:600;background:transparent;color:var(--ink3);border:none;letter-spacing:.03em;transition:all .15s}
 .atab.active{background:var(--ink);color:#fff}
 .adm-section{display:none}
 .adm-section.active{display:block}
-.fb-item{border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px}
-.fb-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.fb-item-who{font-size:13px;font-weight:600}
-.fb-item-stars{font-size:12px}
-.fb-item-cat{font-size:11px;color:var(--ink3);margin-bottom:4px}
-.fb-item-text{font-size:13px;color:var(--ink2)}
 .danger-btn{width:100%;padding:11px;border:1px solid #FECACA;border-radius:8px;background:#FEF2F2;color:#991B1B;font-size:13px;font-weight:600;margin-bottom:8px}
 .danger-btn:hover{background:#FEE2E2}
-
-/* restart modal */
-.rst-opt{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .15s}
-.rst-opt:hover{border-color:var(--ink)}
-.rst-opt h4{font-size:14px;font-weight:600;margin-bottom:2px}
-.rst-opt p{font-size:12px;color:var(--ink3)}
-.rst-opt.danger{border-color:#FECACA}
-.rst-opt.danger h4{color:#991B1B}
-
-/* PIN screen */
+.confirm-sheet{background:var(--surface);border-radius:16px 16px 12px 12px;width:100%;max-width:360px;padding:28px;text-align:center}
+.confirm-title{font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px}
+.confirm-sub{font-size:13px;color:var(--ink3);margin-bottom:20px;line-height:1.5}
+.confirm-actions{display:flex;flex-direction:column;gap:8px}
+.confirm-primary{padding:12px;background:var(--ink);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.confirm-primary:hover{opacity:.85}
+.confirm-secondary{padding:12px;background:transparent;color:var(--ink2);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.confirm-secondary:hover{border-color:var(--ink);color:var(--ink)}
+.confirm-danger{padding:12px;background:transparent;color:#EF4444;border:1px solid #FECACA;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.confirm-danger:hover{background:#FEF2F2;border-color:#EF4444}
 .pin-wrap{text-align:center;padding:20px 0}
 .pin-input{width:120px;text-align:center;letter-spacing:.2em;font-size:20px;font-weight:600;border:2px solid var(--border);border-radius:8px;padding:10px;background:var(--bg);color:var(--ink)}
 .pin-input:focus{border-color:var(--ink)}
 .pin-msg{font-size:13px;margin-top:8px;min-height:20px;color:var(--wrong)}
 
-@media(max-width:460px){
-  .stages-grid{grid-template-columns:1fr}
-  .score-detail{grid-template-columns:1fr 1fr}
-  .entry-title{font-size:44px}
+/* ── TEST BADGE ── */
+#test-badge{display:none;align-items:center;gap:3px;font-size:10px;font-weight:700;letter-spacing:.08em;background:#FFFBEB;color:#D97706;border:1px solid #FDE68A;border-radius:100px;padding:2px 8px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .entry-body{grid-template-columns:1fr}
+  .entry-right{border-top:1px solid var(--border);border-right:none}
+  .app-layout{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto;flex-direction:row;flex-wrap:wrap}
+  .sidebar-nav{display:none}
+  .game-layout{grid-template-columns:1fr}
+  .game-left{border-right:none;border-bottom:1px solid var(--border)}
+  .home-grid{grid-template-columns:repeat(2,1fr)}
+  .score-stats{grid-template-columns:repeat(2,1fr)}
+  .score-actions{grid-template-columns:1fr 1fr}
 }
-
-/* ── GAME NAV BAR ── */
-.game-nav-bar{display:flex;gap:8px;padding:8px 0 14px;border-bottom:1px solid var(--border);margin-bottom:24px}
-.gnav-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border:1px solid var(--border);border-radius:100px;font-size:12px;font-weight:600;color:var(--ink2);background:var(--surface);cursor:pointer;letter-spacing:.02em;transition:all .15s}
-.gnav-btn:hover{border-color:var(--ink);color:var(--ink);background:var(--bg)}
-.gnav-btn:last-child{border-color:#FECACA;color:#EF4444}
-.gnav-btn:last-child:hover{border-color:#EF4444;background:#FEF2F2;color:#DC2626}
-.gnav-icon{font-size:13px}
-
-/* ── CONFIRM MODAL (inline, small) ── */
-.confirm-sheet{background:var(--surface);border-radius:16px 16px 12px 12px;width:100%;max-width:380px;padding:24px;text-align:center}
-.confirm-title{font-size:17px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px}
-.confirm-sub{font-size:13px;color:var(--ink3);margin-bottom:20px;line-height:1.5}
-.confirm-actions{display:flex;flex-direction:column;gap:8px}
-.confirm-primary{padding:12px;background:var(--ink);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
-.confirm-primary:hover{opacity:.85}
-.confirm-secondary{padding:12px;background:transparent;color:var(--ink2);border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-.confirm-secondary:hover{border-color:var(--ink);color:var(--ink)}
-.confirm-danger{padding:12px;background:transparent;color:#EF4444;border:1px solid #FECACA;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-.confirm-danger:hover{background:#FEF2F2;border-color:#EF4444}
-
+@media(max-width:500px){
+  .entry-left,.entry-right{padding:36px 24px}
+  .home-grid{grid-template-columns:1fr}
+  .score-main{grid-template-columns:1fr}
+  .score-actions{grid-template-columns:1fr}
+  .btn-home{grid-column:auto}
+  .main-content{padding:20px}
+  .game-right{padding:24px 20px}
+}
 </style>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -234,136 +295,219 @@ input{font-family:inherit;outline:none}
 
 <!-- ENTRY SCREEN -->
 <div id="s-entry" class="screen active">
-<div class="wrap">
-  <div class="topbar">
+<div class="entry-outer">
+  <div class="entry-topbar">
     <div class="logo">Aptitude<span>Quest</span></div>
+    <div style="font-size:13px;color:var(--ink3)">Free aptitude practice</div>
   </div>
-  <div class="entry-hero">
-    <div class="entry-eyebrow">Aptitude practice · 4 categories · 5 questions per stage</div>
-    <h1 class="entry-title">Sharp<br>minds,<br><em>sharper</em><br>scores.</h1>
-    <p class="entry-sub">Practice quant, logic, verbal, and data skills. Beat each stage to unlock the next.</p>
-    <div class="palette-strip">
-      <span style="background:var(--quant)"></span>
-      <span style="background:var(--logic)"></span>
-      <span style="background:var(--verbal)"></span>
-      <span style="background:var(--data)"></span>
+  <div class="entry-body">
+    <div class="entry-left">
+      <div class="entry-eyebrow">Aptitude practice · 4 categories</div>
+      <h1 class="entry-title">Sharp<br>minds,<br><em>sharper</em><br>scores.</h1>
+      <p class="entry-sub">Practice quant, logic, verbal, and data skills. Beat each stage to unlock the next.</p>
+      <div class="palette-strip">
+        <span style="background:var(--quant)"></span>
+        <span style="background:var(--logic)"></span>
+        <span style="background:var(--verbal)"></span>
+        <span style="background:var(--data)"></span>
+      </div>
     </div>
-    <div class="entry-form">
-      <label for="player-name-input">Your name to begin</label>
+    <div class="entry-right">
+      <div class="entry-features">
+        <div class="entry-feature"><div class="entry-feature-dot" style="background:var(--quant)"></div>12 stages that unlock progressively</div>
+        <div class="entry-feature"><div class="entry-feature-dot" style="background:var(--logic)"></div>30-question pool per stage, 5 served randomly</div>
+        <div class="entry-feature"><div class="entry-feature-dot" style="background:var(--verbal)"></div>Timed questions with explanations + ELI5</div>
+        <div class="entry-feature"><div class="entry-feature-dot" style="background:var(--data)"></div>Global leaderboard — compete with everyone</div>
+      </div>
+      <label class="entry-form-label" for="player-name-input">Your name to begin</label>
       <input type="text" id="player-name-input" class="entry-input" placeholder="e.g. Priya, Rohan, Alex" maxlength="24" autocomplete="off">
       <button class="btn-primary" onclick="startPlayer()">Start playing →</button>
+      <a class="back-link" id="back-link" onclick="goHome()" style="display:none">← Back to my game</a>
     </div>
-    <a class="back-link" id="back-link" onclick="goHome()" style="display:none">← Back to my game</a>
   </div>
 </div>
 </div>
 
 <!-- HOME SCREEN -->
 <div id="s-home" class="screen">
-<div class="wrap">
-  <div class="home-header">
-    <div class="player-info">
-      <div class="avatar" id="hm-av"></div>
-      <div>
-        <div style="display:flex;align-items:center;gap:8px">
-      <div class="player-name" id="hm-name"></div>
-      <span id="test-badge" style="display:none;align-items:center;gap:3px;font-size:10px;font-weight:700;letter-spacing:.08em;background:#FFFBEB;color:#D97706;border:1px solid #FDE68A;border-radius:100px;padding:2px 8px">🧪 TEST</span>
-    </div>
-        <div class="player-sub" id="hm-sub"></div>
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">Aptitude<span>Quest</span></div>
+      <div style="font-size:11px;color:var(--ink3);font-style:italic;margin-top:3px;letter-spacing:.01em">Made for learners, made by a learner.</div>
+      <div class="sidebar-player">
+        <div class="avatar" id="hm-av"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="player-name" id="hm-name"></div>
+            <span id="test-badge">🧪 TEST</span>
+          </div>
+          <div class="player-sub" id="hm-sub"></div>
+        </div>
       </div>
     </div>
-    <div class="topbar-actions">
-      <button class="icon-btn" title="Leaderboard" onclick="openLB()">⊞</button>
-      <button class="icon-btn" title="Feedback" onclick="openFB()">✦</button>
-      <button class="icon-btn" title="Restart" onclick="openRst()" style="border-color:#FECACA;color:#EF4444">↺</button>
+
+    <div class="sidebar-stats">
+      <div class="sstat" id="tap-score" onclick="adminTap()" title="Tap 5× for admin">
+        <span class="sstat-num" id="hm-score">0</span>
+        <div class="sstat-lbl">Score</div>
+      </div>
+      <div class="sstat">
+        <span class="sstat-num" id="hm-streak">0</span>
+        <div class="sstat-lbl">Streak</div>
+      </div>
+      <div class="sstat">
+        <span class="sstat-num" id="hm-stages">0/12</span>
+        <div class="sstat-lbl">Stages</div>
+      </div>
+      <div class="sstat">
+        <span class="sstat-num" id="hm-acc">—</span>
+        <div class="sstat-lbl">Accuracy</div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav" id="sidebar-nav"></div>
+
+    <div class="sidebar-actions">
+      <button class="sact-btn" onclick="openLB()">🏆 Board</button>
+      <button class="sact-btn" onclick="openFB()">💬 Feedback</button>
+      <button class="sact-btn" onclick="openAbout()">👤 About</button>
+      <button class="sact-btn danger" onclick="openRst()">↺ Reset</button>
     </div>
   </div>
-  <div class="stats-bar">
-    <div class="stat-cell" id="tap-score" onclick="adminTap()">
-      <span class="stat-num" id="hm-score">0</span>
-      <div class="stat-lbl">Total Score</div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="main-topbar">
+      <div class="main-title" id="main-title">Choose a stage</div>
+      <div class="main-topbar-right">
+        <button class="icon-btn" title="Leaderboard" onclick="openLB()">⊞</button>
+        <button class="icon-btn" title="Feedback" onclick="openFB()">✦</button>
+      </div>
     </div>
-    <div class="stat-cell">
-      <span class="stat-num" id="hm-streak">0</span>
-      <div class="stat-lbl">Best Streak</div>
-    </div>
-    <div class="stat-cell">
-      <span class="stat-num" id="hm-acc">—</span>
-      <div class="stat-lbl">Accuracy</div>
+    <div class="main-content">
+      <div class="home-welcome">
+        <h2 id="home-greeting">Welcome back!</h2>
+        <p id="home-sub">Pick a stage from the left or below to start playing.</p>
+      </div>
+      <div class="home-grid" id="home-grid"></div>
     </div>
   </div>
-  <div class="section-label">Quantitative</div>
-  <div class="stages-grid" id="grid-quant"></div>
-  <div class="section-label" style="margin-top:20px">Logic</div>
-  <div class="stages-grid" id="grid-logic"></div>
-  <div class="section-label" style="margin-top:20px">Verbal</div>
-  <div class="stages-grid" id="grid-verbal"></div>
-  <div class="section-label" style="margin-top:20px">Data Interpretation</div>
-  <div class="stages-grid" id="grid-data"></div>
-  <div style="height:40px"></div>
+
 </div>
 </div>
 
 <!-- GAME SCREEN -->
 <div id="s-game" class="screen">
-<div class="wrap">
-  <div class="game-top">
-    <div class="game-stage-info">
-      <div class="game-swatch" id="gm-swatch"></div>
-      <div class="game-stage-name" id="gm-sname"></div>
+<div class="app-layout">
+
+  <!-- SIDEBAR (reused for game context) -->
+  <div class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">Aptitude<span>Quest</span></div>
+      <div style="font-size:11px;color:var(--ink3);font-style:italic;margin-top:3px;letter-spacing:.01em">Made for learners, made by a learner.</div>
+      <div class="sidebar-player">
+        <div class="avatar" id="gm-av"></div>
+        <div>
+          <div class="player-name" id="gm-player-name"></div>
+          <div class="player-sub" id="gm-player-sub"></div>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <div class="progress-dots" id="gm-dots"></div>
-      <div class="timer-badge" id="gm-timer">30</div>
+    <div class="sidebar-stats">
+      <div class="sstat">
+        <span class="sstat-num" id="gm-score-display">0</span>
+        <div class="sstat-lbl">Session pts</div>
+      </div>
+      <div class="sstat">
+        <span class="sstat-num" id="gm-streak-display">0</span>
+        <div class="sstat-lbl">Streak 🔥</div>
+      </div>
+    </div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:16px;flex:1">
+      <div>
+        <div class="game-prog-label">Progress</div>
+        <div class="prog-dots" id="gm-dots"></div>
+      </div>
+      <div class="game-timer-block">
+        <div class="timer-label">Time left</div>
+        <div class="timer-circle" id="timer-circle">
+          <span class="timer-num" id="gm-timer">—</span>
+        </div>
+      </div>
+    </div>
+    <div style="padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px">
+      <button class="gnav-btn" onclick="confirmHome()">⌂ Back to stage map</button>
+      <button class="gnav-btn danger" onclick="confirmRestart()">↺ Restart stage</button>
     </div>
   </div>
-  <div class="game-nav-bar">
-    <button class="gnav-btn" onclick="confirmHome()" title="Back to stage map">
-      <span class="gnav-icon">⌂</span> Home
-    </button>
-    <button class="gnav-btn" onclick="confirmRestart()" title="Restart this stage">
-      <span class="gnav-icon">↺</span> Restart stage
-    </button>
-  </div>
-  <div id="gm-q-counter" class="q-counter"></div>
-  <div id="gm-q-text" class="q-text"></div>
-  <div id="gm-options" class="options"></div>
-  <div class="explain-box" id="gm-explain">
-    <div class="explain-tabs">
-      <button class="etab active" onclick="switchTab(0)">Explanation</button>
-      <button class="etab" onclick="switchTab(1)">ELI5 🧸</button>
+
+  <!-- MAIN GAME AREA -->
+  <div class="main-area">
+    <div class="main-topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="game-swatch" id="gm-swatch" style="width:10px;height:10px;border-radius:3px"></div>
+        <div class="main-title" id="gm-sname"></div>
+      </div>
+      <div id="gm-q-counter" class="q-counter" style="margin-bottom:0"></div>
     </div>
-    <div class="explain-content" id="gm-expl-text"></div>
+    <div class="game-right">
+      <div id="gm-diff-badge" class="q-diff-badge diff-easy" style="margin-bottom:14px">Easy</div>
+      <div id="gm-q-text" class="q-text"></div>
+      <div id="gm-options" class="options"></div>
+      <div class="explain-box" id="gm-explain">
+        <div class="explain-tabs">
+          <button class="etab active" onclick="switchTab(0)">Explanation</button>
+          <button class="etab" onclick="switchTab(1)">ELI5 🧸</button>
+        </div>
+        <div class="explain-content" id="gm-expl-text"></div>
+      </div>
+      <button class="btn-next" id="gm-next" onclick="nextQ()">Next question →</button>
+    </div>
   </div>
-  <button class="btn-next" id="gm-next" onclick="nextQ()">Next question →</button>
+
 </div>
 </div>
 
 <!-- SCORE SCREEN -->
 <div id="s-score" class="screen">
-<div class="wrap score-wrap">
-  <div class="topbar" style="margin-bottom:32px">
-    <div class="logo">Aptitude<span>Quest</span></div>
-    <button class="icon-btn" onclick="openLB()">⊞</button>
-  </div>
-  <div class="score-label">Stage complete</div>
-  <div class="score-big" id="sc-score">0<span>/50</span></div>
-  <div class="score-msg" id="sc-msg"></div>
-  <div class="answer-palette" id="sc-palette"></div>
-  <div class="score-detail">
-    <div class="sd-cell"><div class="sd-num" id="sc-correct">0</div><div class="sd-lbl">Correct</div></div>
-    <div class="sd-cell"><div class="sd-num" id="sc-time">0s</div><div class="sd-lbl">Avg time</div></div>
-    <div class="sd-cell"><div class="sd-num" id="sc-streak">0</div><div class="sd-lbl">Streak</div></div>
-    <div class="sd-cell"><div class="sd-num" id="sc-acc">0%</div><div class="sd-lbl">Accuracy</div></div>
-  </div>
-  <div class="unlock-banner" id="sc-unlock">
-    <div class="unlock-icon">🔓</div>
-    <div class="unlock-text"><strong id="sc-unlock-name"></strong>Unlocked! New stage ready.</div>
-  </div>
-  <div class="score-actions">
-    <button class="btn-sec" id="sc-retry" onclick="retryStage()">↺ Retry</button>
-    <button class="btn-sec" id="sc-share" onclick="shareScore()">📸 Share score</button>
-    <button class="btn-home" onclick="goHome()">← Back to stages</button>
+<div class="score-outer">
+  <div class="score-card">
+    <div class="score-card-top">
+      <div class="score-stage-info">
+        <div class="score-swatch" id="sc-swatch"></div>
+        <div class="score-stage-name" id="sc-stage-name"></div>
+      </div>
+      <div class="logo">Aptitude<span>Quest</span></div>
+    </div>
+    <div class="score-main">
+      <div class="score-left">
+        <div class="score-label">Points earned</div>
+        <div class="score-big" id="sc-score">0<span> pts</span></div>
+        <div class="score-msg" id="sc-msg"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Your answers</div>
+        <div class="answer-palette" id="sc-palette" style="width:100%"></div>
+      </div>
+    </div>
+    <div class="score-stats">
+      <div class="sd-cell"><div class="sd-num" id="sc-correct">0/5</div><div class="sd-lbl">Correct</div></div>
+      <div class="sd-cell"><div class="sd-num" id="sc-time">—</div><div class="sd-lbl">Avg time</div></div>
+      <div class="sd-cell"><div class="sd-num" id="sc-streak">0</div><div class="sd-lbl">Best streak</div></div>
+      <div class="sd-cell"><div class="sd-num" id="sc-acc">—</div><div class="sd-lbl">All-time acc</div></div>
+    </div>
+    <div class="unlock-banner" id="sc-unlock">
+      <div style="font-size:24px">🔓</div>
+      <div class="unlock-text"><strong id="sc-unlock-name"></strong><span>Unlocked! Ready to play.</span></div>
+    </div>
+    <div class="score-actions">
+      <button class="btn-sec" id="sc-retry" onclick="retryStage()">↺ Retry</button>
+      <button class="btn-sec" id="sc-share" onclick="shareScore()">📸 Share score</button>
+      <button class="btn-home" onclick="goHome()">← Back to stages</button>
+    </div>
   </div>
 </div>
 </div>
@@ -994,6 +1138,8 @@ function getUnlocked() {
 function renderHome() {
   loadPlayer();
   const col = P.avColor || avatarColor(P.name);
+
+  // Sidebar avatar
   const av = $('hm-av');
   av.textContent = initials(P.name);
   av.style.background = col;
@@ -1001,36 +1147,61 @@ function renderHome() {
   $('hm-name').textContent = P.name;
   const done = P.completed.length;
   $('hm-sub').textContent = done === 0 ? 'Just getting started' : `${done} of 12 stages cleared`;
-  // Show test mode badge
-  const testBadge = document.getElementById('test-badge');
-  if (testBadge) testBadge.style.display = isTestPlayer() ? 'inline-flex' : 'none';
   $('hm-score').textContent = P.totalScore.toLocaleString();
   $('hm-streak').textContent = P.bestStreak;
+  $('hm-stages').textContent = done + '/12';
   const acc = P.totalAnswered > 0 ? Math.round(P.totalCorrect/P.totalAnswered*100)+'%' : '—';
   $('hm-acc').textContent = acc;
 
+  // Test badge
+  const tb = $('test-badge');
+  if (tb) tb.style.display = isTestPlayer() ? 'inline-flex' : 'none';
+
+  // Greeting
+  $('home-greeting').textContent = done === 0 ? `Welcome, ${P.name}!` : `Welcome back, ${P.name}!`;
+  $('home-sub').textContent = done === 0 ? 'Start with Numbers Basics — more stages unlock as you progress.' : `${done} stage${done>1?'s':''} cleared. Keep going!`;
+
   const unlocked = getUnlocked();
+
+  // Build sidebar nav
+  const nav = $('sidebar-nav');
+  nav.innerHTML = '';
   const cats = ['quant','logic','verbal','data'];
   cats.forEach(cat => {
-    const grid = $('grid-'+cat);
-    grid.innerHTML = '';
+    const label = document.createElement('div');
+    label.className = 'nav-cat-label';
+    label.textContent = CAT_LABEL[cat];
+    nav.appendChild(label);
     STAGES.filter(s=>s.cat===cat).forEach(s => {
-      const isUnlocked = unlocked.has(s.id);
+      const isU = unlocked.has(s.id);
       const isDone = P.completed.includes(s.id);
-      const card = document.createElement('div');
-      card.className = 'stage-card' + (isUnlocked ? '' : ' locked');
-      card.innerHTML = `
-        <div class="stage-swatch" style="background:${CAT_COLOR[cat]}"></div>
-        <div class="stage-body">
-          <div class="stage-cat" style="color:${CAT_COLOR[cat]}">${CAT_LABEL[cat]}</div>
-          <div class="stage-name">${s.name}</div>
-          <div class="stage-lvl">Level ${s.level} · 30-question pool</div>
-          ${isDone ? '<span class="stage-badge badge-done">Cleared ✓</span>' : ''}
-          ${!isUnlocked ? '<span class="stage-badge badge-lock">🔒</span>' : ''}
-        </div>`;
-      if (isUnlocked) card.onclick = () => startStage(s.id);
-      grid.appendChild(card);
+      const btn = document.createElement('button');
+      btn.className = 'nav-stage' + (isU?'':' locked') + (isDone?' done':'');
+      btn.innerHTML = `<div class="nav-dot" style="${isU&&!isDone?'background:'+CAT_COLOR[cat]:''}"></div><span class="nav-stage-name">${s.name}</span><span class="nav-check">✓</span>${!isU?'<span class="nav-stage-lck">🔒</span>':''}`;
+      if (isU) btn.onclick = () => startStage(s.id);
+      nav.appendChild(btn);
     });
+  });
+
+  // Build main grid — show all stages grouped
+  const grid = $('home-grid');
+  grid.innerHTML = '';
+  STAGES.forEach(s => {
+    const isU = unlocked.has(s.id);
+    const isDone = P.completed.includes(s.id);
+    const card = document.createElement('div');
+    card.className = 'stage-card' + (isU?'':' locked') + (isDone?' done':'');
+    card.innerHTML = `
+      <div class="stage-swatch" style="background:${CAT_COLOR[s.cat]}"></div>
+      <div class="stage-body">
+        <div class="stage-cat" style="color:${CAT_COLOR[s.cat]}">${CAT_LABEL[s.cat]}</div>
+        <div class="stage-name">${s.name}</div>
+        <div class="stage-lvl">Level ${s.level} · 30-question pool</div>
+        ${isDone?'<span class="stage-badge badge-done">Cleared ✓</span>':''}
+        ${!isU?'<span class="stage-badge" style="background:var(--bg);color:var(--ink3)">🔒</span>':''}
+      </div>`;
+    if (isU) card.onclick = () => startStage(s.id);
+    grid.appendChild(card);
   });
 
   showScreen('s-home');
@@ -1050,8 +1221,17 @@ function startStage(id) {
   const stage = STAGES.find(s=>s.id===id);
   SESSION = {stageId:id, stage, questions:pickQuestions(id), qIdx:0, streak:0, score:0, correct:0, times:[], startTime:0};
   const col = CAT_COLOR[stage.cat];
+
+  // Populate game sidebar
   $('gm-swatch').style.background = col;
   $('gm-sname').textContent = stage.name;
+  const gmAv = $('gm-av');
+  if (gmAv) { gmAv.textContent = initials(P.name); gmAv.style.background = P.avColor || avatarColor(P.name); }
+  if ($('gm-player-name')) $('gm-player-name').textContent = P.name;
+  if ($('gm-player-sub')) $('gm-player-sub').textContent = CAT_LABEL[stage.cat] + ' · Level ' + stage.level;
+  if ($('gm-score-display')) $('gm-score-display').textContent = '0';
+  if ($('gm-streak-display')) $('gm-streak-display').textContent = '0';
+
   showScreen('s-game');
   renderQuestion();
 }
@@ -1070,8 +1250,15 @@ function renderQuestion() {
     dots.appendChild(d);
   }
 
-  $('gm-q-counter').textContent = `Question ${qIdx+1} of 5`;
+  $('gm-q-counter').textContent = `Q ${qIdx+1} of 5`;
   $('gm-q-text').textContent = q.text;
+
+  // difficulty badge
+  const db = $('gm-diff-badge');
+  if (db) {
+    db.textContent = q.diff.charAt(0).toUpperCase()+q.diff.slice(1);
+    db.className = 'q-diff-badge diff-'+q.diff;
+  }
 
   const opts = $('gm-options');
   opts.innerHTML = '';
@@ -1100,8 +1287,9 @@ function renderQuestion() {
     elapsed++;
     const left = maxTime - elapsed;
     const tb = $('gm-timer');
-    tb.textContent = left + 's';
-    tb.classList.toggle('warn', left <= 8);
+    if (tb) tb.textContent = left + 's';
+    const tc = $('timer-circle');
+    if (tc) tc.classList.toggle('warn', left <= 8);
     if (left <= 0) { clearInterval(timerInterval); timeOut(); }
   }
   tick();
@@ -1137,6 +1325,10 @@ function answerQ(chosen) {
   $('gm-expl-text').textContent = q.explain;
   $('gm-explain').classList.add('show');
   $('gm-next').classList.add('show');
+
+  // Update sidebar live stats
+  if ($('gm-score-display')) $('gm-score-display').textContent = SESSION.score;
+  if ($('gm-streak-display')) $('gm-streak-display').textContent = SESSION.streak;
 }
 
 function timeOut() {
@@ -1184,6 +1376,9 @@ function showResults() {
 
   // Score display
   $('sc-score').innerHTML = `${score}<span> pts</span>`;
+  // Stage swatch + name on score card
+  if ($('sc-swatch')) $('sc-swatch').style.background = CAT_COLOR[SESSION.stage.cat];
+  if ($('sc-stage-name')) $('sc-stage-name').textContent = CAT_LABEL[SESSION.stage.cat] + ' · ' + SESSION.stage.name;
   const msgs = pct===100?'Flawless. Absolutely flawless.':pct>=80?'Outstanding work.':pct>=60?'Stage cleared!':'Keep practising.';
   $('sc-msg').textContent = msgs;
 
@@ -1651,6 +1846,8 @@ function confirmRestart() {
   openOverlay('restart-confirm-ov');
 }
 
+function openAbout() { openOverlay('about-ov'); }
+
 // ── Boot
 init();
 </script>
@@ -1690,6 +1887,63 @@ init();
   <div class="confirm-actions">
     <button class="confirm-danger" onclick="closeOverlay('restart-confirm-ov');retryStage()">Yes, restart</button>
     <button class="confirm-secondary" onclick="closeOverlay('restart-confirm-ov')">Keep playing</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ABOUT OVERLAY -->
+<div class="overlay" id="about-ov" onclick="closeAll(event,this)">
+<div class="sheet" style="max-width:480px">
+  <button class="sheet-close" onclick="closeOverlay('about-ov')">✕</button>
+
+  <!-- Creator card -->
+  <div style="background:linear-gradient(135deg,#EEF2FF 0%,#F8F8F5 100%);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px;text-align:center">
+    <div style="width:64px;height:64px;border-radius:16px;background:#6366F1;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;margin:0 auto 14px;font-family:'DM Sans',sans-serif">J</div>
+    <div style="font-size:20px;font-weight:800;letter-spacing:-.4px;color:var(--ink);margin-bottom:4px">Jonam</div>
+    <div style="font-size:13px;color:var(--ink3)">Creator of AptitudeQuest</div>
+  </div>
+
+  <!-- Story -->
+  <div style="margin-bottom:20px">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">The story</div>
+    <p style="font-size:14px;line-height:1.75;color:var(--ink2)">
+      AptitudeQuest was built on a Friday night as a side project — a single HTML file that grew into a full aptitude practice platform with 12 stages, ~360 questions, and a global leaderboard.
+    </p>
+    <p style="font-size:14px;line-height:1.75;color:var(--ink2);margin-top:10px">
+      The idea was simple: aptitude practice should be <em>fun</em>, <em>free</em>, and feel like a game — not a textbook. No ads, no paywalls, no signups.
+    </p>
+    <div style="margin-top:16px;padding:14px 16px;background:var(--bg);border-left:3px solid #6366F1;border-radius:0 8px 8px 0">
+      <p style="font-size:14px;font-style:italic;color:var(--ink);font-weight:500;line-height:1.6">"Made for learners, made by a learner."</p>
+    </div>
+  </div>
+
+  <!-- What's inside -->
+  <div style="margin-bottom:20px">
+    <div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">What's inside</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--quant-light);border-radius:8px;padding:12px">
+        <div style="font-size:18px;font-weight:800;color:var(--quant);font-family:'DM Mono',monospace">12</div>
+        <div style="font-size:12px;color:var(--ink2);margin-top:2px">Stages</div>
+      </div>
+      <div style="background:#ECFDF5;border-radius:8px;padding:12px">
+        <div style="font-size:18px;font-weight:800;color:var(--logic);font-family:'DM Mono',monospace">~360</div>
+        <div style="font-size:12px;color:var(--ink2);margin-top:2px">Questions</div>
+      </div>
+      <div style="background:var(--verbal-light);border-radius:8px;padding:12px">
+        <div style="font-size:18px;font-weight:800;color:var(--verbal);font-family:'DM Mono',monospace">4</div>
+        <div style="font-size:12px;color:var(--ink2);margin-top:2px">Categories</div>
+      </div>
+      <div style="background:var(--data-light);border-radius:8px;padding:12px">
+        <div style="font-size:18px;font-weight:800;color:var(--data);font-family:'DM Mono',monospace">100%</div>
+        <div style="font-size:12px;color:var(--ink2);margin-top:2px">Free forever</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Built with -->
+  <div style="font-size:12px;color:var(--ink3);text-align:center;padding-top:16px;border-top:1px solid var(--border)">
+    Good luck with the practice — hope this plays a small part in your career. 🚀
   </div>
 </div>
 </div>
